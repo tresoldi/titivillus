@@ -6,6 +6,8 @@ distance, but in this module we need to make sure we can operate on arbitrary
 iterable data structures.
 """
 
+# TODO: redo distance/similarity
+
 # Import Python standard libraries
 from typing import Sequence, List, Tuple
 

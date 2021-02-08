@@ -7,10 +7,10 @@ import random
 import titivillus
 
 def main():
-    s1 = titivillus.random_stemma(num_roots=2)
+    #s1 = titivillus.random_stemma(num_roots=2)
     # s2 = titivillus.random_stemma("tiago",num_roots=2)
 
-    s1.print()
+    #s1.print()
 
     # s1.to_dot()
 
@@ -55,4 +55,13 @@ def main2():
     for n in titivillus.ngrams_iter("abcde", 2):
         print(n)
 
-main()
+def main3():
+    s1 = titivillus.random_stemma()
+    s2 = titivillus.random_stemma(num_roots=2)
+
+    print(s1)
+    print(s2)
+
+    print(s2.charset)
+
+main3()

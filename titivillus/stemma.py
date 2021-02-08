@@ -7,36 +7,37 @@ Main module for the generation of stemma.
 
 # Import Python standard libraries
 import random
+from itertools import chain
 from typing import Optional, Union, List
 
+from .codex import Codex
 # Import other local modules
 from .common import set_seeds
 
 
+# TODO: accept empty list of codices?
 class Stemma:
-    def __init__(self, documents, source, ages):
-        self.documents = documents
-        self.source = source
-        self.ages = ages
-
-    def print(self):
-        for d, c, a in zip(self.documents, self.source, self.ages):
-            print(d, c, a)
+    def __init__(self, codices: List[Codex]):
+        self.codices = codices
 
     def __str__(self):
-        return f"dummy stemma {len(self.documents)}"
+        return f"Stemma of {len(self.codices)} codices and {len(self.charset)} chars."
 
-    def to_dot(self):
-        # see if the copy takes mostly from 0 or 1
-        zeros = self.source[-1].count(0)
-        ones = self.source[-1].count(1)
-        print(zeros, ones)
+    # TODO: could return a counter (or have a method for that) and have the charset
+    #       from the keys
+    @property
+    def charset(self) -> set:
+        """
+        Return a set with all the characters used in the stemma.
+        """
+
+        return set(chain.from_iterable([codex.chars for codex in self.codices]))
 
 
 # TODO: allow distribution, so that one root is more likely than the other
-def _split_root_chars(char_list: list, num_roots: int) -> List[list]:
+def _split_root_chars(char_list: list, num_roots: int) -> List[tuple]:
     if num_roots == 1:
-        return [char_list]
+        return [tuple(char_list)]
 
     # Build a list with the same size of `char_list`, filling it with root indexes,
     # and distribute it
@@ -45,24 +46,28 @@ def _split_root_chars(char_list: list, num_roots: int) -> List[list]:
     for char, root in zip(char_list, root_idx):
         roots[root].append(char)
 
-    return roots
+    return [tuple(r) for r in roots]
 
 
-def new_document(roots, max_char):
-    # Pick a random index
-    idx = random.randint(0, len(roots) - 1)
+# TODO: move to codex.py? to some "random generator"?
+def random_codex(stemma):
+    # Pick a random index in the stemma to be the main source
+    cidx = random.randint(0, len(stemma.codices) - 1)
 
-    # Make a copy of the characters and set them all as that source
-    chars = roots[idx][:]
-    source = [idx for _ in range(len(chars))]
+    # Grab a copy of the characters in the selected codex, and generate a list
+    # of sources for all of them. `chars` and `origin` are at first lists, to make the
+    # manipulation easier
+    chars = list(stemma.codices[cidx].chars)
+    origin = [("copy", cidx) for _ in chars]
 
     # random: delete a character
     # TODO: should have a distribution, "favoring" boundaries
     # TODO: should work in blocks
     if random.random() < 0.25:
-        i = random.randint(0, len(chars) - 1)
-        chars[i] = None  # set to None here so alignment is easier
-        source[i] = (source[i], "delete")
+        print(">>>", chars)
+        char_idx = random.randint(0, len(chars) - 1)
+        chars = chars[:char_idx] + chars[char_idx + 1:]
+        origin = origin[:char_idx] + origin[char_idx + 1:]
 
     # unintentional move (which generalizes swap)
     # TODO: should favor closer moves
@@ -70,20 +75,22 @@ def new_document(roots, max_char):
     # TODO: decide what to do when `a` and `b` are the same
     if random.random() < 0.25:
         a = random.randint(0, len(chars) - 1)
-        b = random.randint(0, len(chars) - 1 - 1)
-        if chars[a] is not None:
-            mchar, msour = chars[a], source[a]
-            chars = chars[:a] + chars[a + 1 :]
-            source = source[:a] + source[a + 1 :]
-            chars = chars[:b] + [mchar] + chars[b:]
-            source = source[:b] + [(msour, "move", a, b)] + source[b:]
+        b = random.randint(0, len(chars) - 1)
 
-    if random.random() > 0.25:
-        i = random.randint(0, len(chars) - 1)
-        chars = chars[:i] + [max_char + 1] + chars[i:]
-        source = source[:i] + [("exnovo")] + source[i:]
+        m_char, m_origin = chars[a], origin[a]
+        chars = chars[:a] + chars[a + 1:]
+        origin = origin[:a] + origin[a + 1:]
+        chars = chars[:b] + [m_char] + chars[b:]
+        origin = origin[:b] + [("move", a)] + origin[b:]  # TODO: dropping the copy info
 
-    return chars, source
+    # innovation
+    if random.random() < 0.25:
+        max_char = max(stemma.charset)
+        idx = random.randint(0, len(chars) - 1)
+        chars = chars[:idx] + [max_char + 1] + chars[idx:]
+        origin = origin[:idx] + [("exnovo", None)] + origin[idx:]
+
+    return Codex(chars, origin, stemma.codices[cidx].age + 1.0)
 
 
 # TODO: should we allow passing None to set_seeds(), to refresh the generators?
@@ -107,28 +114,18 @@ def random_stemma(seed: Optional[Union[str, int, float]] = None, **kwargs) -> St
     # definition, a character cannot be found in more than one root -- it can be
     # a single, separate root of itself, shared by other roots, but it cannot
     # be shared.
-    roots = _split_root_chars(list(range(0, num_characters)), num_roots)
-
-    # Define the source of each character in each root as `None`, that is, ex novo
-    source = [[None for _ in doc] for doc in roots]
+    roots_chars = _split_root_chars(list(range(0, num_characters)), num_roots)
 
     # By definition, all roots here share the same age (=distance) of zero
     # TODO: we could allow for the newest root to be 0.0 and have others as negative
-    ages = [0.0] * len(roots)
+    codices = [Codex(charset, (("exnovo", None),) * len(charset), 0.0) for charset
+               in roots_chars]
 
-    # we need to collect the largest character index in use, in case a new
-    # character will be created
-    max_char = max([max(root_doc) for root_doc in roots])
+    stemma = Stemma(codices)
 
-    # Pick one random existing document and a modified one (a copy)
-    # TODO: deal with multiple documents
-    doc_chars, doc_source = new_document(roots, max_char)
+    for i in range(4):
+        cdx = random_codex(stemma)
+        stemma.codices.append(cdx)
+        print(stemma)
 
-    docs = roots
-    docs.append(doc_chars)
-    source.append(doc_source)
-    ages.append(1.0)
-
-    s = Stemma(docs, source, ages)
-
-    return s
+    return stemma
