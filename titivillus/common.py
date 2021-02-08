@@ -5,7 +5,7 @@ Common functions.
 # Import Python standard libraries
 import hashlib
 import random
-from typing import Union, List
+from typing import Union, List, Optional, Sequence
 
 # Import 3rd party libraries
 import numpy as np
@@ -76,3 +76,30 @@ def random_codex_name(used_names: List[str] = None) -> str:
             name_found = True
 
     return name
+
+
+# TODO: properly rewrite
+def sequence_find(hay: Sequence, needle: Sequence) -> Optional[int]:
+    """
+    Return the index for starting index of a sub-sequence within a sequence.
+
+    The function is intended to work similarly to the built-in `.find()` method for
+    Python strings, but accepting all types of sequences (including different types
+    for `hay` and `needle`).
+
+    :param hay: The sequence to be searched within.
+    :param needle: The sub-sequence to be located in the sequence.
+    :return: The starting index of the sub-sequence in the sequence, or `None` if not
+             found.
+    """
+    # Cache `needle` length and have it as a tuple already
+    len_needle = len(needle)
+    t_needle = tuple(needle)
+
+    # Iterate over all sub-lists (or sub-tuples) of the correct length and check
+    # for matches
+    for i in range(len(hay) - len_needle + 1):
+        if tuple(hay[i:i + len_needle]) == t_needle:
+            return i
+
+    return None

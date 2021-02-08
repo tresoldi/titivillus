@@ -13,3 +13,4 @@ __email__ = "tresoldi@gmail.com"
 from .codex import Codex, codex_distance
 from .common import set_seeds
 from .stemma import Stemma, random_stemma
+from . import distance
