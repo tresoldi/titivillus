@@ -11,7 +11,7 @@ s1 = titivillus.random_stemma(num_roots=2)
 
 s1.print()
 
-#s1.to_dot()
+# s1.to_dot()
 
 for i in range(3):
     c = titivillus.Codex(
@@ -23,14 +23,21 @@ for i in range(3):
     print(c)
 
 chars1 = (1, 2, 3, 4, 5)
-chars2 = (1, 2, 3, 4, 5)
-origins = ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1)
+chars3 = (1, 2, 4, 5, 6, 7)
+origins1 = ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1)
+origins3 = ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1), ("copy", 1)
 age = 1.0
 
-codex1 = titivillus.Codex(chars1, origins, age)
-codex2 = titivillus.Codex(chars2, origins, age)
-print("--", titivillus.codex_distance(codex1, codex2))
+codex1 = titivillus.Codex(chars1, origins1, age)
+codex2 = titivillus.Codex(chars1, origins1, age)
+codex3 = titivillus.Codex(chars3, origins3, age)
 
-print("kitten")
-d = titivillus.codex.edit_distance("kitten", "sitting")
-print(d)
+for method in ["edit", "jaccard"]:
+    print(method,
+          titivillus.codex_distance(codex1, codex2, method=method),
+          titivillus.codex_distance(codex1, codex3, method=method),
+          )
+
+print("KITTEN")
+print("edit", titivillus.codex.edit_distance("kitten", "sitting"))
+print("jaccard", titivillus.codex.jaccard_distance("kitten", "sitting"))

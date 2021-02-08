@@ -95,12 +95,20 @@ def edit_distance(seq1, seq2):
     return (matrix[size_x - 1, size_y - 1])
 
 
+def jaccard_distance(seq1, seq2):
+    intersection = len(set(seq1).intersection(seq2))
+    union = len(seq1) + len(seq2) - intersection
+    return 1.0 - (float(intersection) / union)
+
+
 def codex_distance(codex1: Codex, codex2: Codex, method: str = "edit") -> float:
     """
     Computes the distance between two codices.
     """
 
-    if method != "edit":
-        raise ValueError("Unsupported distance method.")
+    if method == "edit":
+        return edit_distance(codex1.chars, codex2.chars)
+    elif method == "jaccard":
+        return jaccard_distance(codex1.chars, codex2.chars)
 
-    return edit_distance(codex1.chars, codex2.chars)
+    raise ValueError("Unsupported distance method.")
