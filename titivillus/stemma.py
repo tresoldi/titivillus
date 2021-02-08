@@ -32,6 +32,7 @@ class Stemma:
         ones = self.source[-1].count(1)
         print(zeros, ones)
 
+
 # TODO: allow distribution, so that one root is more likely than the other
 def _split_root_chars(char_list: list, num_roots: int) -> List[list]:
     if num_roots == 1:
@@ -46,9 +47,10 @@ def _split_root_chars(char_list: list, num_roots: int) -> List[list]:
 
     return roots
 
+
 def new_document(roots, max_char):
     # Pick a random index
-    idx = random.randint( 0, len(roots)-1)
+    idx = random.randint(0, len(roots) - 1)
 
     # Make a copy of the characters and set them all as that source
     chars = roots[idx][:]
@@ -58,8 +60,8 @@ def new_document(roots, max_char):
     # TODO: should have a distribution, "favoring" boundaries
     # TODO: should work in blocks
     if random.random() < 0.25:
-        i = random.randint(0, len(chars)-1)
-        chars[i] = None # set to None here so alignment is easier
+        i = random.randint(0, len(chars) - 1)
+        chars[i] = None  # set to None here so alignment is easier
         source[i] = (source[i], "delete")
 
     # unintentional move (which generalizes swap)
@@ -67,21 +69,22 @@ def new_document(roots, max_char):
     # TODO: should work in blocks
     # TODO: decide what to do when `a` and `b` are the same
     if random.random() < 0.25:
-        a = random.randint(0, len(chars)-1)
-        b = random.randint(0, len(chars)-1-1)
+        a = random.randint(0, len(chars) - 1)
+        b = random.randint(0, len(chars) - 1 - 1)
         if chars[a] is not None:
             mchar, msour = chars[a], source[a]
-            chars = chars[:a] + chars[a+1:]
-            source = source[:a] + source[a+1:]
+            chars = chars[:a] + chars[a + 1 :]
+            source = source[:a] + source[a + 1 :]
             chars = chars[:b] + [mchar] + chars[b:]
             source = source[:b] + [(msour, "move", a, b)] + source[b:]
 
     if random.random() > 0.25:
-        i = random.randint(0, len(chars)-1)
-        chars = chars[:i] + [max_char+1] + chars[i:]
+        i = random.randint(0, len(chars) - 1)
+        chars = chars[:i] + [max_char + 1] + chars[i:]
         source = source[:i] + [("exnovo")] + source[i:]
 
     return chars, source
+
 
 # TODO: should we allow passing None to set_seeds(), to refresh the generators?
 # TODO: number of roots should come from a distribution (Poisson?), also considering
@@ -111,7 +114,7 @@ def random_stemma(seed: Optional[Union[str, int, float]] = None, **kwargs) -> St
 
     # By definition, all roots here share the same age (=distance) of zero
     # TODO: we could allow for the newest root to be 0.0 and have others as negative
-    ages = [0.0]*len(roots)
+    ages = [0.0] * len(roots)
 
     # we need to collect the largest character index in use, in case a new
     # character will be created
@@ -120,7 +123,6 @@ def random_stemma(seed: Optional[Union[str, int, float]] = None, **kwargs) -> St
     # Pick one random existing document and a modified one (a copy)
     # TODO: deal with multiple documents
     doc_chars, doc_source = new_document(roots, max_char)
-
 
     docs = roots
     docs.append(doc_chars)

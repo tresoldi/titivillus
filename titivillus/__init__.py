@@ -10,7 +10,8 @@ __author__ = "Tiago Tresoldi"
 __email__ = "tresoldi@gmail.com"
 
 # Build namespace
-from .codex import Codex, codex_distance
-from .common import set_seeds
-from .stemma import Stemma, random_stemma
 from . import distance
+from .codex import Codex, codex_distance
+from .common import set_seeds, collect_subseqs
+from .ngrams import ngrams_iter
+from .stemma import Stemma, random_stemma

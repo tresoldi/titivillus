@@ -13,6 +13,7 @@ import numpy as np
 
 # TODO: bring `unique_ids()` from langgenera?
 
+
 def set_seeds(seed: Union[str, float, int]) -> None:
     """
     Set seeds globally from the user provided one.
@@ -47,12 +48,30 @@ def random_codex_name(used_names: List[str] = None) -> str:
     """
 
     # TODO: expand with other libraries besides apophthegmata
-    libraries = ["Athens", "Athos", "BeogMSPC", "BeogNBS", "Brux", "Cologn",
-                 "DayrAlAbyad", "HML",
-                 "HMS",
-                 "LondAdd", "MilAmbr", "MoscGim", "MoscRGB", "MunSB", "ParCoisl",
-                 "Sin", "SofiaNBKM", "StPeterBAN", "StPeterRNB", "Strasb", "Vat",
-                 "Wien"]
+    libraries = [
+        "Athens",
+        "Athos",
+        "BeogMSPC",
+        "BeogNBS",
+        "Brux",
+        "Cologn",
+        "DayrAlAbyad",
+        "HML",
+        "HMS",
+        "LondAdd",
+        "MilAmbr",
+        "MoscGim",
+        "MoscRGB",
+        "MunSB",
+        "ParCoisl",
+        "Sin",
+        "SofiaNBKM",
+        "StPeterBAN",
+        "StPeterRNB",
+        "Strasb",
+        "Vat",
+        "Wien",
+    ]
 
     index = str(random.randint(1, 1500))
 
@@ -63,8 +82,9 @@ def random_codex_name(used_names: List[str] = None) -> str:
     while not name_found:
         # 3/4 of the time we add an alphabetic suffix, weighting towards the first ones
         if random.random() < 0.75:
-            suffix = random.choices("ABCDEFGHIJ",
-                                    weights=[512, 256, 128, 64, 32, 16, 8, 4, 2, 1])[0]
+            suffix = random.choices(
+                "ABCDEFGHIJ", weights=[512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
+            )[0]
             name = f"{random.choice(libraries)}_{index}_{suffix}"
         else:
             name = f"{random.choice(libraries)}_{index}"
@@ -99,7 +119,62 @@ def sequence_find(hay: Sequence, needle: Sequence) -> Optional[int]:
     # Iterate over all sub-lists (or sub-tuples) of the correct length and check
     # for matches
     for i in range(len(hay) - len_needle + 1):
-        if tuple(hay[i:i + len_needle]) == t_needle:
+        if tuple(hay[i : i + len_needle]) == t_needle:
             return i
 
     return None
+
+
+def collect_subseqs(sequence: Sequence, sort: bool = True) -> List[Sequence]:
+    """
+    Collects all possible sub-sequences in a given sequence.
+
+    When sorting is requested, sub-sequences will first be sorted by their length and,
+    later, by comparing one with the other. Mixing types, like strings and integers, can
+    lead to unexpected results and is not suggested if the type cannot be guaranteed.
+
+    Note that this function performs simple comprehensions, neither using padding
+    symbols nor the more complex methods n-gram collection methods ultimately based on
+    `ngram_iter()`.
+
+    Examples
+    --------
+    collect_subseqs('abcde')
+    ['a', 'b', 'c', 'd', 'e', 'ab', 'bc', 'cd', 'de', 'abc', 'bcd', 'cde', 'abcd', 'bcde', 'abcde']
+
+    :param sequence: The sequence that shall be converted into it's ngram-representation.
+    :param sort: Whether to sort the list of ngrams by length and by identity
+        (default: True).
+    :return: A list of all ngrams of the input sequence.
+    """
+
+    # Cache the length of the sequence
+    length = len(sequence)
+
+    # Set the starting index
+    idx = 0
+
+    # define the output list
+    ret = []
+
+    # start the while loop
+    while idx != length and idx < length:
+        # copy the sequence
+        new_sequence = sequence[idx:length]
+
+        # append the sequence to the output list
+        ret += [new_sequence]
+
+        # loop over the new sequence
+        for j in range(1, len(new_sequence)):
+            ret += [new_sequence[:j]]
+            ret += [new_sequence[j:]]
+
+        # increment idx and decrement length
+        idx += 1
+        length -= 1
+
+    if sort:
+        ret = sorted(ret, key=lambda e: (len(e), e))
+
+    return ret

@@ -40,8 +40,19 @@ def main():
               )
 
     print("KITTEN")
-    print("edit", titivillus.codex.edit_distance("kitten", "sitting"))
-    print("jaccard", titivillus.codex.jaccard_distance("kitten", "sitting"))
-    print("mmcwpa", titivillus.codex.mmcwpa_distance("kitten", "sitting"))
+    print("edit", titivillus.distance.edit_distance("kitten", "sitting"))
+    print("jaccard", titivillus.distance.jaccard_distance("kitten", "sitting"))
+    print("mmcwpa", titivillus.distance.mmcwpa_distance("kitten", "sitting"))
+    print("mmcwpa", titivillus.distance.subseq_jaccard_distance("kitten", "sitting"))
+
+def main2():
+    x = titivillus.collect_subseqs("abcde")
+    print(x)
+
+    x = titivillus.collect_subseqs([c for c in "abcde"])
+    print(x)
+
+    for n in titivillus.ngrams_iter("abcde", 2):
+        print(n)
 
 main()

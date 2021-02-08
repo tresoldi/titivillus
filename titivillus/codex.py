@@ -9,6 +9,7 @@ from typing import Tuple, Optional
 from .common import random_codex_name
 from .distance import edit_distance, jaccard_distance, mmcwpa_distance
 
+
 @dataclass
 class Codex:
     """
@@ -28,6 +29,7 @@ class Codex:
     `name` is a label for the codex, which will be generated automatically in
     post-initialization if necessary.
     """
+
     chars: Tuple[int, ...]
     origins: Tuple[Tuple[str, Optional[int]], ...]
     age: float
@@ -55,8 +57,6 @@ class Codex:
         # TODO: check or force value ranges?
         if len(self.chars) != len(self.origins):
             raise ValueError("Mismatch in length between `chars` and `origins`.")
-
-
 
 
 def codex_distance(codex1: Codex, codex2: Codex, method: str = "edit") -> float:

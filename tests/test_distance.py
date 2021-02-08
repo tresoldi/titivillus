@@ -21,54 +21,116 @@ class TestDistance(unittest.TestCase):
     test2_seq_b = [1, 2, 3]
     test3_seq_a = (1, 2, 3, 4, 5)
     test3_seq_b = (1, 2, 4, 3, 6, 7)
+    test4_seq_a = (1, 2, 3)
+    test4_seq_b = ["a", "b", "c", "d"]
 
     def test_edit_distance(self):
         self.assertAlmostEqual(
             titivillus.distance.edit_distance(self.test1_seq_a, self.test1_seq_b),
             3.0,
-            places=1)
+            places=1,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.edit_distance(self.test2_seq_a, self.test2_seq_b),
             0.0,
-            places=1)
+            places=1,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.edit_distance(self.test3_seq_a, self.test3_seq_b),
             3.0,
-            places=1)
+            places=1,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.edit_distance(self.test4_seq_a, self.test4_seq_b),
+            4.0,
+            places=1,
+        )
 
     def test_jaccard_distance(self):
         self.assertAlmostEqual(
             titivillus.distance.jaccard_distance(self.test1_seq_a, self.test1_seq_b),
             0.7,
-            places=1)
+            places=1,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.jaccard_distance(self.test2_seq_a, self.test2_seq_b),
             0.0,
-            places=1)
+            places=1,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.jaccard_distance(self.test3_seq_a, self.test3_seq_b),
             0.428571,
-            places=4)
+            places=4,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.jaccard_distance(self.test4_seq_a, self.test4_seq_b),
+            1.0,
+            places=4,
+        )
+
+    def test_subseq_jaccard_distance(self):
+        self.assertAlmostEqual(
+            titivillus.distance.subseq_jaccard_distance(
+                self.test1_seq_a, self.test1_seq_b
+            ),
+            0.751556,
+            places=1,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.subseq_jaccard_distance(
+                self.test2_seq_a, self.test2_seq_b
+            ),
+            0.0,
+            places=1,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.subseq_jaccard_distance(
+                self.test3_seq_a, self.test3_seq_b
+            ),
+            0.787094,
+            places=4,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.subseq_jaccard_distance(
+                self.test4_seq_a, self.test4_seq_b
+            ),
+            1.0,
+            places=4,
+        )
 
     def test_mmcwapa_distance(self):
         self.assertAlmostEqual(
             titivillus.distance.mmcwpa_distance(self.test1_seq_a, self.test1_seq_b),
             0.538461,
-            places=4)
+            places=4,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.mmcwpa_distance(self.test2_seq_a, self.test2_seq_b),
             0.0,
-            places=1)
+            places=1,
+        )
 
         self.assertAlmostEqual(
             titivillus.distance.mmcwpa_distance(self.test3_seq_a, self.test3_seq_b),
             0.554638,
-            places=4)
+            places=4,
+        )
+
+        self.assertAlmostEqual(
+            titivillus.distance.mmcwpa_distance(self.test4_seq_a, self.test4_seq_b),
+            1.0,
+            places=4,
+        )
 
 
 if __name__ == "__main__":

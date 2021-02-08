@@ -16,7 +16,6 @@ import titivillus
 
 
 class TestCodex(unittest.TestCase):
-
     def test_create(self):
         """
         Tests for Codex creation.
@@ -26,7 +25,7 @@ class TestCodex(unittest.TestCase):
         codex = titivillus.Codex(
             (1, 2, 3),  # chars
             (("copy", 1), ("copy", 1), ("copy", 1)),  # origins
-            1.0  # age
+            1.0,  # age
         )
 
         codex = titivillus.Codex(
@@ -34,7 +33,7 @@ class TestCodex(unittest.TestCase):
             (("copy", 1), ("copy", 1), ("copy", 1)),  # origins
             1.0,  # age
             3.0,  # weight
-            "Man_Name"  # name
+            "Man_Name",  # name
         )
 
         # Test various exceptions for missing or wrong information
@@ -48,7 +47,7 @@ class TestCodex(unittest.TestCase):
         Test equality methods.
         """
 
-        chars = (1,2,3)
+        chars = (1, 2, 3)
         origins = ("copy", 1), ("copy", 1), ("copy", 1)
         age = 1.0
         weight = 1.0
@@ -60,6 +59,7 @@ class TestCodex(unittest.TestCase):
 
         assert codex1 == codex2
         assert codex1 != codex3
+
 
 if __name__ == "__main__":
     # Explicitly creating and running a test suite allows to profile

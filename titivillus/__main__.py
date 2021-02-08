@@ -12,6 +12,7 @@ import configparser
 # Import our library
 import titivillus
 
+
 def parse_arguments():
     """
     Parses arguments and returns a namespace.
@@ -170,7 +171,8 @@ def main():
     args = parse_arguments()
 
     # Generate the tree
-    #tree = new_tree(args)
+    # tree = new_tree(args)
+
 
 if __name__ == "__main__":
     main()

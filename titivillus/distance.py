@@ -13,7 +13,7 @@ from typing import Sequence, List, Tuple
 import numpy as np
 
 # Import local modules
-from .common import sequence_find
+from .common import sequence_find, collect_subseqs
 
 
 # TODO: allow some normalization?
@@ -49,13 +49,13 @@ def edit_distance(seq1: Sequence, seq2: Sequence) -> float:
                 matrix[x, y] = min(
                     matrix[x - 1, y] + 1,  # deletion
                     matrix[x - 1, y - 1],  # insertion
-                    matrix[x, y - 1] + 1  # substitution
+                    matrix[x, y - 1] + 1,  # substitution
                 )
             else:
                 matrix[x, y] = min(
                     matrix[x - 1, y] + 1,  # deletion
                     matrix[x - 1, y - 1] + 1,  # insertion
-                    matrix[x, y - 1] + 1  # substitution
+                    matrix[x, y - 1] + 1,  # substitution
                 )
 
     return matrix[size_x - 1, size_y - 1]
@@ -75,8 +75,44 @@ def jaccard_distance(seq1: Sequence, seq2: Sequence) -> float:
     return 1.0 - (float(intersection) / union)
 
 
-def _mmcwpa(f_x: List[Sequence], f_y: List[Sequence], ssnc: float) -> \
-        Tuple[List[Sequence], List[Sequence], float]:
+# TODO: rename from jaccard, as it is not really jaccard...
+def subseq_jaccard_distance(seq1: Sequence, seq2: Sequence) -> float:
+    """
+    Computes a Jaccard distance between two sequences using sub-sequence occurrence.
+
+    :param seq1: The first sequence of elements to be compared.
+    :param seq2: The second sequence of elements to be compared.
+    :return: The Subseq-Jaccard distance between the two sequences.
+    """
+
+    subseqs1 = collect_subseqs(seq1)
+    subseqs2 = collect_subseqs(seq2)
+
+    # From the longest subseq, which is the length of the longest sequence,
+    # collect all subsequences of that given length in both sets, compute the
+    # Jaccard index, correct it by length of the subsequence (so that longer ones
+    # will score higher) and update the internal results before returning.
+    # TODO: collect beforehand in a list, so we don´t repeat the comprehension
+    # TODO: convert to tuple beforehand as well?
+    jaccard = []
+    max_length = max([len(seq1), len(seq2)])
+    for length in range(max_length, 0, -1):
+        l_subseq1 = [tuple(ss) for ss in subseqs1 if len(ss) == length]
+        l_subseq2 = [tuple(ss) for ss in subseqs2 if len(ss) == length]
+
+        intersection = len(set(l_subseq1).intersection(l_subseq2))
+        union = len(l_subseq1) + len(l_subseq2) - intersection
+        jaccard.append((float(intersection) / union) * length)
+
+    # Compute the denominator, as the highest possible value
+    den = (max_length * (max_length + 1)) / 2.0
+
+    return (1.0 - (sum(jaccard) / den)) ** max_length
+
+
+def _mmcwpa(
+    f_x: List[Sequence], f_y: List[Sequence], ssnc: float
+) -> Tuple[List[Sequence], List[Sequence], float]:
     """
     Internal function for MMCWPA implementation.
 
@@ -119,7 +155,7 @@ def _mmcwpa(f_x: List[Sequence], f_y: List[Sequence], ssnc: float) -> \
             # window in Fx
             for i in range(len(sf_x) - length + 1):
                 # extract the pattern for matching
-                pattern = sf_x[i:i + length]
+                pattern = sf_x[i : i + length]
 
                 # look for the pattern in Fy
                 for idx_y, sf_y in enumerate(f_y):
@@ -133,10 +169,10 @@ def _mmcwpa(f_x: List[Sequence], f_y: List[Sequence], ssnc: float) -> \
                         # the patterns removed, update the SSNC and
                         # set 'match' as True, in order to cascade
                         # out of the loops
-                        tmp_x = [sf_x[:i], sf_x[i + length:]]
-                        tmp_y = [sf_y[:j], sf_y[j + length:]]
-                        new_f_x = f_x[:idx_x] + tmp_x + f_x[idx_x + 1:]
-                        new_f_y = f_y[:idx_y] + tmp_y + f_y[idx_y + 1:]
+                        tmp_x = [sf_x[:i], sf_x[i + length :]]
+                        tmp_y = [sf_y[:j], sf_y[j + length :]]
+                        new_f_x = f_x[:idx_x] + tmp_x + f_x[idx_x + 1 :]
+                        new_f_y = f_y[:idx_y] + tmp_y + f_y[idx_y + 1 :]
 
                         ssnc += (2 * length) ** 2
 
@@ -192,4 +228,4 @@ def mmcwpa_distance(seq_a: Sequence, seq_b: Sequence) -> float:
         if len(f_x) == 0 or len(f_y) == 0:
             break
 
-    return 1.0 - ((ssnc / ((len_x + len_y) ** 2.)) ** 0.5)
+    return 1.0 - ((ssnc / ((len_x + len_y) ** 2.0)) ** 0.5)
