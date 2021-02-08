@@ -10,5 +10,6 @@ __author__ = "Tiago Tresoldi"
 __email__ = "tresoldi@gmail.com"
 
 # Build namespace
+from .codex import Codex, codex_distance
 from .common import set_seeds
 from .stemma import Stemma, random_stemma

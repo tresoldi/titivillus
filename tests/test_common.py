@@ -16,6 +16,8 @@ import titivillus
 
 
 class TestCommon(unittest.TestCase):
+
+    # TODO: can we actually compare across different environments?
     def test_set_seeds(self):
         # As the actual numbers can vary between platforms, we cannot test against the
         # actual results of random calls, but only initialize twice and verify that
