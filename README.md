@@ -1,5 +1,8 @@
 # Titivillus
 
+![CI](https://github.com/tresoldi/titivillus/workflows/CI/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/titivillus.svg)](https://pypi.org/project/titivillus)
+
 `titivillus` is a Python library and related command-line tools for simulating 
 stemmatological networks and related data (characters, states, edge length etc.). It 
 is intended for benchmarking quantitative methods of textual evolution, also providing 
