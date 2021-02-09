@@ -62,21 +62,21 @@ def main2():
 
 
 def main3():
-    s1 = titivillus.random_stemma()
-    s2 = titivillus.random_stemma(num_roots=2)
+    s1 = titivillus.random_stemma(seed=42)
+#    s2 = titivillus.random_stemma(num_roots=2)
 
     print(s1)
-    print(s2)
+#    print(s2)
 
     dg1 = s1.as_graph()
-    dg2 = s2.as_graph()
+#    dg2 = s2.as_graph()
 
     import matplotlib.pyplot as plt
     import networkx as nx
     nx.draw(dg1)
     plt.show()
-    nx.draw(dg2)
-    plt.show()
+#    nx.draw(dg2)
+#    plt.show()
 
 
 main3()

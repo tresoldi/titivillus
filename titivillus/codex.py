@@ -4,25 +4,39 @@ Module defining a Codex dataclass.
 
 import random
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Optional
 
 from .common import random_codex_name
 from .distance import edit_distance, jaccard_distance, mmcwpa_distance
 
 
+@dataclass
 class Origin:
+    """
+    Super-class for representing a character origin.
+
+    The `Origin` classes are shorthands that allow us to have a common interface to all
+    possible different histories of a character, such as an ex-novo invention, or
+    a copy.
+    """
+
     def __init__(self):
         pass
 
     @property
-    def source(self):
+    def source(self) -> Optional[int]:
         """
         Property with the index of the source codex, or None if not applicable.
         """
         return None
 
 
+@dataclass
 class OriginExNovo(Origin):
+    """
+    Class for representing an ex-novo origin, when a character has no ancestor.
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -30,27 +44,43 @@ class OriginExNovo(Origin):
         return "[exnovo]"
 
 
+@dataclass
 class OriginCopy(Origin):
-    def __init__(self, source_idx):
+    """
+    Class for representing a copy origin, when a character is taken from another codex.
+    """
+
+    def __init__(self, source_idx: int):
+        """
+        :param source_idx: The numeric index to the source codex.
+        """
         super().__init__()
         self.source_idx = source_idx
 
     @property
-    def source(self):
+    def source(self) -> int:
         return self.source_idx
 
     def __repr__(self):
         return f"[copy #{self.source_idx}]"
 
 
+@dataclass
 class OriginMove(Origin):
+    """
+    Class for representing a move origin, when a character is displaced inside the codex.
+
+    The class carries both the index to the origin, as in OriginCopy, and the original
+    position, so that different statistics can be drawn from it.
+    """
+
     def __init__(self, source_idx, start_pos):
         super().__init__()
         self.source_idx = source_idx
         self.start_pos = start_pos
 
     @property
-    def source(self):
+    def source(self) -> int:
         return self.source_idx
 
     def __repr__(self):

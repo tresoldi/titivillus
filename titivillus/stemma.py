@@ -13,6 +13,7 @@ from typing import Optional, Union, List
 import networkx as nx
 
 from .codex import Codex, OriginExNovo, OriginMove, OriginCopy, Origin
+
 # Import other local modules
 from .common import set_seeds
 
@@ -35,8 +36,7 @@ class Stemma:
             sources = [idx for idx in sources if idx is not None]
 
             for s in sources:
-                DG.add_edge(self.codices[s].name,
-                            codex.name)
+                DG.add_edge(self.codices[s].name, codex.name)
 
         return DG
 
@@ -67,8 +67,9 @@ def _split_root_chars(char_list: list, num_roots: int) -> List[tuple]:
 
 
 # TODO: move to codex.py? to some "random generator"?
-def random_codex(stemma):
+def random_codex(stemma: Stemma) -> Codex:
     # Pick a random index in the stemma to be the main source
+    # TODO: pick by using (x,y) and weight
     cidx = random.randint(0, len(stemma.codices) - 1)
 
     # Grab a copy of the characters in the selected codex, and generate a list
@@ -81,31 +82,36 @@ def random_codex(stemma):
     # TODO: should have a distribution, "favoring" boundaries
     # TODO: should work in blocks
     if random.random() < 0.25:
-        print(">>>", chars)
         char_idx = random.randint(0, len(chars) - 1)
-        chars = chars[:char_idx] + chars[char_idx + 1:]
-        origin = origin[:char_idx] + origin[char_idx + 1:]
+        chars.pop(char_idx)
+        origin.pop(char_idx)
 
     # unintentional move (which generalizes swap)
     # TODO: should favor closer moves
     # TODO: should work in blocks
     # TODO: decide what to do when `a` and `b` are the same
     if random.random() < 0.25:
+        # Random select and pop a character and its origin
         a = random.randint(0, len(chars) - 1)
-        b = random.randint(0, len(chars) - 1)
+        m_char = chars.pop(a)
+        m_origin = origin.pop(a)
 
-        m_char, m_origin = chars[a], origin[a].source
-        chars = chars[:a] + chars[a + 1:]
-        origin = origin[:a] + origin[a + 1:]
-        chars = chars[:b] + [m_char] + chars[b:]
-        origin = origin[:b] + [OriginMove(m_origin, a)] + origin[b:]
+        # Randomly select a destination: note that, at this point, `chars` and `origin`
+        # already have had their elements removed. As for the origin, we need to
+        # build a new element that involves the movement and the origin.
+        # TODO: should have a movement element even if it happens to stay in the same
+        #       position?
+        b = random.randint(0, len(chars) - 1)
+        chars.insert(b, m_char)
+        origin.insert(b, OriginMove(m_origin.source, a))
 
     # innovation
     if random.random() < 0.25:
         max_char = max(stemma.charset)
         idx = random.randint(0, len(chars) - 1)
-        chars = chars[:idx] + [max_char + 1] + chars[idx:]
-        origin = origin[:idx] + [OriginExNovo()] + origin[idx:]
+
+        chars.insert(idx, max_char)
+        origin.insert(idx, OriginExNovo())
 
     return Codex(tuple(chars), tuple(origin), stemma.codices[cidx].age + 1.0)
 
@@ -142,7 +148,7 @@ def random_stemma(seed: Optional[Union[str, int, float]] = None, **kwargs) -> St
 
     stemma = Stemma(codices)
 
-    for i in range(4):
+    for i in range(8):
         cdx = random_codex(stemma)
         stemma.codices.append(cdx)
         print(stemma)
