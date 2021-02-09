@@ -1,5 +1,7 @@
 # Titivillus
 
+![Titivillus](https://raw.githubusercontent.com/tresoldi/titivillus/main/docs/titivillus.png)
+
 ![CI](https://github.com/tresoldi/titivillus/workflows/CI/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/titivillus.svg)](https://pypi.org/project/titivillus)
 
