@@ -11,7 +11,7 @@ __email__ = "tresoldi@gmail.com"
 
 # Build namespace
 from . import distance
-from .codex import Codex, codex_distance
+from .codex import Codex, codex_distance, OriginCopy, OriginMove, OriginExNovo
 from .common import set_seeds, collect_subseqs
 from .ngrams import ngrams_iter
 from .stemma import Stemma, random_stemma

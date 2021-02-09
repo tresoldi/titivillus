@@ -10,7 +10,8 @@ import random
 from itertools import chain
 from typing import Optional, Union, List
 
-from .codex import Codex
+from .codex import Codex, OriginExNovo, OriginMove, OriginCopy, Origin
+
 # Import other local modules
 from .common import set_seeds
 
@@ -58,7 +59,7 @@ def random_codex(stemma):
     # of sources for all of them. `chars` and `origin` are at first lists, to make the
     # manipulation easier
     chars = list(stemma.codices[cidx].chars)
-    origin = [("copy", cidx) for _ in chars]
+    origin: List[Origin] = [OriginCopy(cidx) for _ in chars]
 
     # random: delete a character
     # TODO: should have a distribution, "favoring" boundaries
@@ -66,8 +67,8 @@ def random_codex(stemma):
     if random.random() < 0.25:
         print(">>>", chars)
         char_idx = random.randint(0, len(chars) - 1)
-        chars = chars[:char_idx] + chars[char_idx + 1:]
-        origin = origin[:char_idx] + origin[char_idx + 1:]
+        chars = chars[:char_idx] + chars[char_idx + 1 :]
+        origin = origin[:char_idx] + origin[char_idx + 1 :]
 
     # unintentional move (which generalizes swap)
     # TODO: should favor closer moves
@@ -78,19 +79,19 @@ def random_codex(stemma):
         b = random.randint(0, len(chars) - 1)
 
         m_char, m_origin = chars[a], origin[a]
-        chars = chars[:a] + chars[a + 1:]
-        origin = origin[:a] + origin[a + 1:]
+        chars = chars[:a] + chars[a + 1 :]
+        origin = origin[:a] + origin[a + 1 :]
         chars = chars[:b] + [m_char] + chars[b:]
-        origin = origin[:b] + [("move", a)] + origin[b:]  # TODO: dropping the copy info
+        origin = origin[:b] + [OriginMove(m_origin, a)] + origin[b:]
 
     # innovation
     if random.random() < 0.25:
         max_char = max(stemma.charset)
         idx = random.randint(0, len(chars) - 1)
         chars = chars[:idx] + [max_char + 1] + chars[idx:]
-        origin = origin[:idx] + [("exnovo", None)] + origin[idx:]
+        origin = origin[:idx] + [OriginExNovo()] + origin[idx:]
 
-    return Codex(chars, origin, stemma.codices[cidx].age + 1.0)
+    return Codex(tuple(chars), tuple(origin), stemma.codices[cidx].age + 1.0)
 
 
 # TODO: should we allow passing None to set_seeds(), to refresh the generators?
@@ -118,8 +119,10 @@ def random_stemma(seed: Optional[Union[str, int, float]] = None, **kwargs) -> St
 
     # By definition, all roots here share the same age (=distance) of zero
     # TODO: we could allow for the newest root to be 0.0 and have others as negative
-    codices = [Codex(charset, (("exnovo", None),) * len(charset), 0.0) for charset
-               in roots_chars]
+    codices = [
+        Codex(charset, tuple([OriginExNovo() for _ in range(len(charset))]), 0.0)
+        for charset in roots_chars
+    ]
 
     stemma = Stemma(codices)
 
