@@ -68,7 +68,15 @@ def main3():
     print(s1)
     print(s2)
 
-    print(s2.charset)
+    dg1 = s1.as_graph()
+    dg2 = s2.as_graph()
+
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    nx.draw(dg1)
+    plt.show()
+    nx.draw(dg2)
+    plt.show()
 
 
 main3()

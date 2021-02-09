@@ -10,8 +10,9 @@ import random
 from itertools import chain
 from typing import Optional, Union, List
 
-from .codex import Codex, OriginExNovo, OriginMove, OriginCopy, Origin
+import networkx as nx
 
+from .codex import Codex, OriginExNovo, OriginMove, OriginCopy, Origin
 # Import other local modules
 from .common import set_seeds
 
@@ -23,6 +24,21 @@ class Stemma:
 
     def __str__(self):
         return f"Stemma of {len(self.codices)} codices and {len(self.charset)} chars."
+
+    def as_graph(self):
+        DG = nx.DiGraph()
+        for codex in self.codices:
+            DG.add_node(codex.name)
+
+        for codex in self.codices:
+            sources = [origin.source for origin in codex.origins]
+            sources = [idx for idx in sources if idx is not None]
+
+            for s in sources:
+                DG.add_edge(self.codices[s].name,
+                            codex.name)
+
+        return DG
 
     # TODO: could return a counter (or have a method for that) and have the charset
     #       from the keys
@@ -67,8 +83,8 @@ def random_codex(stemma):
     if random.random() < 0.25:
         print(">>>", chars)
         char_idx = random.randint(0, len(chars) - 1)
-        chars = chars[:char_idx] + chars[char_idx + 1 :]
-        origin = origin[:char_idx] + origin[char_idx + 1 :]
+        chars = chars[:char_idx] + chars[char_idx + 1:]
+        origin = origin[:char_idx] + origin[char_idx + 1:]
 
     # unintentional move (which generalizes swap)
     # TODO: should favor closer moves
@@ -78,9 +94,9 @@ def random_codex(stemma):
         a = random.randint(0, len(chars) - 1)
         b = random.randint(0, len(chars) - 1)
 
-        m_char, m_origin = chars[a], origin[a]
-        chars = chars[:a] + chars[a + 1 :]
-        origin = origin[:a] + origin[a + 1 :]
+        m_char, m_origin = chars[a], origin[a].source
+        chars = chars[:a] + chars[a + 1:]
+        origin = origin[:a] + origin[a + 1:]
         chars = chars[:b] + [m_char] + chars[b:]
         origin = origin[:b] + [OriginMove(m_origin, a)] + origin[b:]
 
