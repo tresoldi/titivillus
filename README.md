@@ -60,6 +60,9 @@ nx.draw(graph)
 plt.show()
 ```
 
+
+![random stemma](https://raw.githubusercontent.com/tresoldi/titivillus/main/docs/graph1.png)
+
 No stand-alone command-line tool has been released yet.
 
 ## Changelog
