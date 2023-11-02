@@ -18,14 +18,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-def cluster_affinity(df:pd.DataFrame):
+
+def cluster_affinity(df: pd.DataFrame):
     clustering = AffinityPropagation(random_state=5).fit(df)
 
     return clustering.labels_
 
-def cluster_random(df:pd.DataFrame):
+
+def cluster_random(df: pd.DataFrame):
     rows = len(df.index)
-    clusters = random.randint(2, int(rows/2))
+    clusters = random.randint(2, int(rows / 2))
 
     return [random.randint(0, clusters) for _ in range(rows)]
 
@@ -55,16 +57,16 @@ def plot(principal, labels):
     ax = fig.add_subplot(1, 1, 1)
     ax.set_xlabel("Principal Component 1", fontsize=15)
     ax.set_ylabel("Principal Component 2", fontsize=15)
-    #ax.set_title("2 component PCA", fontsize=20)
+    # ax.set_title("2 component PCA", fontsize=20)
     plt.scatter(principal.pc1, principal.pc2)
     ax.grid()
 
     matrix = principal.to_numpy()
-    colors = plt.cm.rainbow(np.linspace(0, 1, max(labels)+1))
+    colors = plt.cm.rainbow(np.linspace(0, 1, max(labels) + 1))
     for i in range(len(matrix)):
         x = matrix[i][0]
         y = matrix[i][1]
-        plt.plot(x, y, "bo",c=colors[labels[i]])
+        plt.plot(x, y, "bo", c=colors[labels[i]])
         plt.text(x * (1 + 0.03), y * (1 + 0.03), mss[i], fontsize=8)
 
     plt.show()
@@ -72,7 +74,7 @@ def plot(principal, labels):
 
 def read_dataframe(filename: str) -> pd.DataFrame:
     """
-    Read a dataframe prepared with `convert.py`.
+    Read a dataframe prepared with `convert_json.py`.
     """
 
     df = pd.read_csv(filename, delimiter="\t", encoding="utf-8", index_col=0)
@@ -110,7 +112,8 @@ def parse_arguments() -> dict:
     )
     # NOTE: the random method is only for testing/developing purposes!
     parser.add_argument(
-        "-c", "--cluster",
+        "-c",
+        "--cluster",
         type=str,
         choices=["affinity", "random"],
         default="affinity",
@@ -140,9 +143,9 @@ def main(arguments: dict):
         df = pca(df, 2)
 
     # Run the clustering
-    if arguments["cluster"]=="affinity":
+    if arguments["cluster"] == "affinity":
         labels = cluster_affinity(df)
-    elif arguments["cluster"]=="random":
+    elif arguments["cluster"] == "random":
         labels = cluster_random(df)
 
     # Plot results
