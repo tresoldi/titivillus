@@ -10,7 +10,13 @@ __author__ = "Tiago Tresoldi"
 __email__ = "tiago.tresoldi@lingfil.uu.se"
 
 # Build namespace
-from .cluster import cluster_affinity, cluster_kmeans, cluster_hierarchical
+from .cluster import (
+    cluster_affinity,
+    cluster_kmeans,
+    cluster_hierarchical,
+    cluster_dbscan,
+    cluster_spectral,
+)
 from .common import read_dataframe, scale_data, save_to_csv
 from .dimred import pca_decomposition
 from .plot import plot_clusters

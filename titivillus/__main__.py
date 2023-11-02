@@ -135,6 +135,10 @@ def perform_clustering(
         labels = titivillus.cluster_kmeans(df, n_clusters=num_clusters)
     elif cluster_method == "hierarchical":
         labels = titivillus.cluster_hierarchical(df, n_clusters=num_clusters)
+    elif cluster_method == "dbscan":
+        labels = titivillus.cluster_dbscan(df)
+    elif cluster_method == "spectral":
+        labels = titivillus.cluster_spectral(df, n_clusters=num_clusters)
     else:
         raise ValueError(f"Unknown clustering method: {cluster_method}")
     return labels
@@ -220,7 +224,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-c",
         "--cluster",
-        choices=["affinity", "kmeans", "hierarchical"],
+        choices=["affinity", "kmeans", "hierarchical", "dbscan", "spectral"],
         default="affinity",
         help="Which clustering algorithm to use (default: affinity)",
     )
