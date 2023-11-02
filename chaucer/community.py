@@ -15,6 +15,7 @@ from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
 import matplotlib.pyplot as plt
+import seaborn as sns  # Import seaborn for heatmap plotting
 
 # Configure logging
 logging.basicConfig(
@@ -59,22 +60,45 @@ def pca_decomposition(
     return principal_df
 
 
-def plot_clusters(principal: pd.DataFrame, labels: np.ndarray) -> None:
+def plot_clusters(
+    principal: pd.DataFrame, labels: np.ndarray, plot_type: str = "2d"
+) -> None:
     """
     Plot the data with labels.
+    Supports 2D, 3D, and heatmap plots based on 'plot_type'.
     """
     try:
-        mss = principal.index.to_numpy()
-        fig, ax = plt.subplots(figsize=(20, 20))
-        ax.set_xlabel("Principal Component 1", fontsize=15)
-        ax.set_ylabel("Principal Component 2", fontsize=15)
-        ax.grid()
+        # For 3D plotting
+        if plot_type == "3d":
+            fig = plt.figure(figsize=(20, 20))
+            ax = fig.add_subplot(111, projection="3d")
+            ax.set_xlabel("Principal Component 1", fontsize=15)
+            ax.set_ylabel("Principal Component 2", fontsize=15)
+            ax.set_zlabel("Principal Component 3", fontsize=15)
+            ax.scatter(
+                principal.iloc[:, 0],
+                principal.iloc[:, 1],
+                principal.iloc[:, 2],
+                c=labels,
+                cmap="rainbow",
+            )
 
-        scatter = ax.scatter(
-            principal.iloc[:, 0], principal.iloc[:, 1], c=labels, cmap="rainbow"
-        )
-        legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
-        ax.add_artist(legend1)
+        # For heatmap plotting
+        elif plot_type == "heatmap":
+            similarity_matrix = np.corrcoef(principal.transpose())
+            sns.heatmap(similarity_matrix, cmap="coolwarm")
+            plt.title("Heatmap of Similarity Matrix")
+
+        # Default 2D plotting
+        else:
+            fig, ax = plt.subplots(figsize=(20, 20))
+            ax.set_xlabel("Principal Component 1", fontsize=15)
+            ax.set_ylabel("Principal Component 2", fontsize=15)
+            scatter = ax.scatter(
+                principal.iloc[:, 0], principal.iloc[:, 1], c=labels, cmap="rainbow"
+            )
+            legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
+            ax.add_artist(legend1)
 
         plt.show()
     except Exception as e:
@@ -264,8 +288,20 @@ def main() -> None:
     for index, label in zip(df.index, labels):
         logging.info(f"{index}: Cluster {label}")
 
-    # Plot the results
+    # Plot the results in 2D
     plot_clusters(df, labels)
+
+    # Additional plots if PCA has at least 3 components
+    if df.shape[1] >= 3:
+        plot_clusters(df, labels, plot_type="3d")  # Plot in 3D
+
+    # Plot heatmap if appropriate (note: best for smaller number of features due to readability)
+    if (
+        df.shape[1] <= 20
+    ):  # Adjust this threshold based on your dataset and readability preferences
+        plot_clusters(
+            df, labels, plot_type="heatmap"
+        )  # Plot heatmap of similarity matrix
 
     # Save results to CSV if output file is specified
     if args["output"]:
