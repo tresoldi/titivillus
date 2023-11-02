@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import pandas as pd
 import numpy as np
-from sklearn.cluster import AffinityPropagation
+from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
@@ -33,16 +33,6 @@ def cluster_affinity(df: pd.DataFrame) -> np.ndarray:
         raise
 
     return clustering.labels_
-
-
-def cluster_random(df: pd.DataFrame) -> List[int]:
-    """
-    Assign random cluster labels to data.
-    """
-    rows = df.shape[0]
-    clusters = random.randint(2, int(rows / 2))
-
-    return [random.randint(0, clusters) for _ in range(rows)]
 
 
 def pca_decomposition(
@@ -92,6 +82,32 @@ def plot_clusters(principal: pd.DataFrame, labels: np.ndarray) -> None:
         raise
 
 
+def cluster_kmeans(df: pd.DataFrame, n_clusters: int = 8) -> np.ndarray:
+    """
+    Perform clustering using the K-Means algorithm.
+    """
+    try:
+        kmeans = KMeans(n_clusters=n_clusters, random_state=5).fit(df)
+    except Exception as e:
+        logging.error(f"Error in K-Means clustering: {e}")
+        raise
+
+    return kmeans.labels_
+
+
+def cluster_hierarchical(df: pd.DataFrame, n_clusters: int = 8) -> np.ndarray:
+    """
+    Perform clustering using the Hierarchical clustering algorithm.
+    """
+    try:
+        hierarchical = AgglomerativeClustering(n_clusters=n_clusters).fit(df)
+    except Exception as e:
+        logging.error(f"Error in Hierarchical clustering: {e}")
+        raise
+
+    return hierarchical.labels_
+
+
 def read_dataframe(filename: str) -> pd.DataFrame:
     """
     Read a dataframe from a tab-delimited file.
@@ -133,9 +149,16 @@ def parse_arguments() -> Dict[str, Any]:
     parser.add_argument(
         "-c",
         "--cluster",
-        choices=["affinity", "random"],
+        choices=["affinity", "kmeans", "hierarchical"],
         default="affinity",
-        help="Whether to perform clustering and of which kind (default: affinity)",
+        help="Which clustering algorithm to use (default: affinity)",
+    )
+    parser.add_argument(
+        "-k",
+        "--clusters",
+        type=int,
+        default=8,
+        help="Number of clusters for K-Means and Hierarchical (default: 8)",
     )
     args = parser.parse_args()
     return vars(args)
@@ -169,8 +192,10 @@ def main() -> None:
     # Run the clustering
     if args["cluster"] == "affinity":
         labels = cluster_affinity(df)
-    elif args["cluster"] == "random":
-        labels = cluster_random(df)
+    elif args["cluster"] == "kmeans":
+        labels = cluster_kmeans(df, n_clusters=args["clusters"])
+    elif args["cluster"] == "hierarchical":
+        labels = cluster_hierarchical(df, n_clusters=args["clusters"])
 
     # Log results
     logging.info("Data points and their cluster labels:")
