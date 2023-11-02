@@ -213,7 +213,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-d",
         "--decompose",
-        choices=["none", "pca"],
+        choices=["none", "pca", "tsne"],
         default="pca",
         help="Whether to perform decomposition and of which kind (default: pca)",
     )
