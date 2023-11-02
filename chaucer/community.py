@@ -6,8 +6,8 @@ Performs community detection on preprocessed orthographic tabular data.
 
 import argparse
 import logging
-import random
-from typing import Any, Dict, List, Optional, Union
+from logging import DEBUG, INFO, WARNING, ERROR
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
 import numpy as np
@@ -124,6 +124,20 @@ def read_dataframe(filename: str) -> pd.DataFrame:
     return df
 
 
+def save_to_csv(data: pd.DataFrame, labels: np.ndarray, output_file: str) -> None:
+    """
+    Save the data along with its cluster labels to a CSV file.
+    """
+    try:
+        # Add the labels to the dataframe
+        output_df = data.assign(Cluster=labels)
+        output_df.to_csv(output_file, index=True)
+        logging.info(f"Cluster labels saved to {output_file}.")
+    except Exception as e:
+        logging.error(f"Error saving to CSV: {e}")
+        raise
+
+
 def parse_arguments() -> Dict[str, Any]:
     """
     Parse command line arguments.
@@ -160,6 +174,22 @@ def parse_arguments() -> Dict[str, Any]:
         default=8,
         help="Number of clusters for K-Means and Hierarchical (default: 8)",
     )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default="clustering_output.csv",
+        help="The output CSV file path for saving the clustering results (default: clustering_output.csv)",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbosity",
+        type=int,
+        choices=[0, 1, 2, 3],
+        default=1,
+        help="Verbosity level: 0=WARNING, 1=INFO, 2=DEBUG, 3=ERROR (default: 1)",
+    )
+
     args = parser.parse_args()
     return vars(args)
 
@@ -169,6 +199,18 @@ def main() -> None:
     Script entry point.
     """
     args = parse_arguments()
+
+    # Set logging level based on verbosity
+    if args["verbosity"] == 0:
+        level = WARNING
+    elif args["verbosity"] == 2:
+        level = DEBUG
+    elif args["verbosity"] == 3:
+        level = ERROR
+    else:
+        level = INFO
+
+    logging.basicConfig(level=level, format="%(asctime)s - %(levelname)s - %(message)s")
 
     # Read tabular data as a pandas dataframe
     df = read_dataframe(args["input"])
@@ -204,6 +246,10 @@ def main() -> None:
 
     # Plot the results
     plot_clusters(df, labels)
+
+    # Save results to CSV if output file is specified
+    if args["output"]:
+        save_to_csv(df, labels, args["output"])
 
 
 if __name__ == "__main__":
