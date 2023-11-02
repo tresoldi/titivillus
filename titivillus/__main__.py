@@ -1,31 +1,215 @@
 #!/usr/bin/env python3
 """
-__main__.py
-
-Module for command-line execution and generation of random networks.
+This is the main module for the `titivillus` package. It provides command-line interfaces
+to process input data, perform scaling and decomposition, execute clustering algorithms,
+and save the results to a file.
 """
 
-import logging
+# Import standard modules
 import argparse
-from logging import DEBUG, INFO, WARNING, ERROR
-from typing import Any, Dict
+import logging
+import os
+import sys
 
+# Import third-party modules
+import pandas as pd
+
+# Import local modules
 import titivillus
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# Constants
+DEFAULT_OUTPUT_FILENAME = "clustering_output.csv"
+DEFAULT_NUM_CLUSTERS = 8
+MAX_FEATURES_FOR_HEATMAP = 20
+LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+
+# Verbosity level dictionary
+VERBOSITY_LEVEL = {
+    0: logging.WARNING,
+    1: logging.INFO,
+    2: logging.DEBUG,
+    3: logging.ERROR,
+}
 
 
-def parse_arguments() -> Dict[str, Any]:
+def configure_logging(verbosity: int) -> None:
     """
-    Parse command line arguments.
+    Configure the logging level based on the verbosity option.
+
+    Parameters
+    ----------
+    verbosity : int
+        The verbosity level; higher numbers enable more verbose output.
+
+    Returns
+    -------
+    None
+    """
+    logging.basicConfig(
+        level=VERBOSITY_LEVEL.get(verbosity, logging.INFO), format=LOG_FORMAT
+    )
+
+
+def read_data(input_file: str) -> pd.DataFrame:
+    """
+    Read data from a specified input file.
+
+    Parameters
+    ----------
+    input_file : str
+        The path to the input file to be processed.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the processed data.
+
+    Raises
+    ------
+    SystemExit
+        If the file cannot be found or read.
+    """
+    try:
+        return titivillus.read_dataframe(input_file)
+    except FileNotFoundError:
+        logging.error(f"Input file '{input_file}' not found.")
+        sys.exit(1)
+    except ValueError as e:
+        logging.error(f"Error reading input file: {e}")
+        sys.exit(1)
+
+
+def scale_and_decompose(df: pd.DataFrame, scale: str, decompose: str) -> pd.DataFrame:
+    """
+    Apply scaling and decomposition to the data if required.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The data to be scaled and/or decomposed.
+    scale : str
+        The scaling method to apply.
+    decompose : str
+        The decomposition method to apply.
+
+    Returns
+    -------
+    pd.DataFrame
+        The scaled and/or decomposed data.
+    """
+    if scale != "none":
+        df = titivillus.scale_data(df, scale)
+    if decompose == "pca":
+        df = titivillus.pca_decomposition(df)
+    return df
+
+
+def perform_clustering(
+    df: pd.DataFrame, cluster_method: str, num_clusters: int
+) -> pd.Series:
+    """
+    Perform clustering on the data using the specified method.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The data to cluster.
+    cluster_method : str
+        The clustering algorithm to use.
+    num_clusters : int
+        The number of clusters to form.
+
+    Returns
+    -------
+    pd.Series
+        The cluster labels for each data point.
+
+    Raises
+    ------
+    ValueError
+        If an unknown clustering method is provided.
+    """
+    if cluster_method == "affinity":
+        labels = titivillus.cluster_affinity(df)
+    elif cluster_method == "kmeans":
+        labels = titivillus.cluster_kmeans(df, n_clusters=num_clusters)
+    elif cluster_method == "hierarchical":
+        labels = titivillus.cluster_hierarchical(df, n_clusters=num_clusters)
+    else:
+        raise ValueError(f"Unknown clustering method: {cluster_method}")
+    return labels
+
+
+def generate_plots(df: pd.DataFrame, labels: pd.Series, output_prefix: str) -> None:
+    """
+    Generate and save plots for the clustered data to disk.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The data to plot.
+    labels : pd.Series
+        The cluster labels for each data point.
+    output_prefix : str
+        The prefix for the filenames of the output plots.
+
+    Returns
+    -------
+    None
+    """
+    base_filename = f"{output_prefix}.2dpca.png"
+    titivillus.plot_clusters(df, labels, save_path=base_filename)
+
+    if df.shape[1] >= 3:
+        base_filename = f"{output_prefix}.3dpca.png"
+        titivillus.plot_clusters(df, labels, plot_type="3d", save_path=base_filename)
+
+    if df.shape[1] <= MAX_FEATURES_FOR_HEATMAP:
+        base_filename = f"{output_prefix}.heatmap.png"
+        titivillus.plot_clusters(
+            df, labels, plot_type="heatmap", save_path=base_filename
+        )
+
+
+def save_results(df: pd.DataFrame, labels: pd.Series, output_prefix: str) -> None:
+    """
+    Save the clustering results to a CSV file.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The data to save.
+    labels : pd.Series
+        The cluster labels for each data point.
+    output_prefix : str
+        The prefix for the filenames of the output files.
+
+    Returns
+    -------
+    None
+    """
+    output_path = f"{output_prefix}.clusters.csv"
+    try:
+        titivillus.save_to_csv(df, labels, output_path)
+    except Exception as e:
+        logging.error(f"Failed to save results to '{output_path}': {e}")
+
+
+def parse_arguments() -> argparse.Namespace:
+    """
+    Parse the command line arguments.
+
+    Returns
+    -------
+    argparse.Namespace
+        An object containing all the command line arguments.
     """
     parser = argparse.ArgumentParser(
         description="Prepare orthographic data for analysis."
     )
-    parser.add_argument("input", type=str, help="The source JSON file for processing.")
+    parser.add_argument(
+        "input", type=str, help="The source XML TEI file for processing."
+    )
     parser.add_argument(
         "-d",
         "--decompose",
@@ -51,8 +235,8 @@ def parse_arguments() -> Dict[str, Any]:
         "-o",
         "--output",
         type=str,
-        default="clustering_output.csv",
-        help="The output CSV file path for saving the clustering results (default: clustering_output.csv)",
+        default="output",
+        help="The prefix for all output files, including plots and CSV (default: 'output')",
     )
     parser.add_argument(
         "-s",
@@ -65,75 +249,37 @@ def parse_arguments() -> Dict[str, Any]:
         "-v",
         "--verbosity",
         type=int,
-        choices=[0, 1, 2, 3],
+        choices=VERBOSITY_LEVEL.keys(),
         default=1,
         help="Verbosity level: 0=WARNING, 1=INFO, 2=DEBUG, 3=ERROR (default: 1)",
     )
 
-    args = parser.parse_args()
-    return vars(args)
+    return parser.parse_args()
 
 
 def main() -> None:
     """
-    Script entry point.
+    Main function that parses arguments, processes data, and executes clustering.
+
+    Returns
+    -------
+    None
     """
     args = parse_arguments()
+    configure_logging(args.verbosity)
 
-    # Set logging level based on verbosity
-    if args["verbosity"] == 0:
-        level = WARNING
-    elif args["verbosity"] == 2:
-        level = DEBUG
-    elif args["verbosity"] == 3:
-        level = ERROR
-    else:
-        level = INFO
+    df = read_data(args.input)
+    df = scale_and_decompose(df, args.scale, args.decompose)
+    labels = perform_clustering(df, args.cluster, args.clusters)
 
-    logging.basicConfig(level=level, format="%(asctime)s - %(levelname)s - %(message)s")
-
-    # Read tabular data as a pandas dataframe
-    df = titivillus.read_dataframe(args["input"])
-
-    # Perform scaling if not 'none'
-    if args["scale"] != "none":
-        df = titivillus.scale_data(df, args["scale"])
-
-    # Run decomposition if requested
-    if args["decompose"] == "pca":
-        df = titivillus.pca_decomposition(df)
-
-    # Run the clustering
-    if args["cluster"] == "affinity":
-        labels = titivillus.cluster_affinity(df)
-    elif args["cluster"] == "kmeans":
-        labels = titivillus.cluster_kmeans(df, n_clusters=args["clusters"])
-    elif args["cluster"] == "hierarchical":
-        labels = titivillus.cluster_hierarchical(df, n_clusters=args["clusters"])
-
-    # Log results
     logging.info("Data points and their cluster labels:")
     for index, label in zip(df.index, labels):
         logging.info(f"{index}: Cluster {label}")
 
-    # Plot the results in 2D
-    titivillus.plot_clusters(df, labels)
+    output_prefix = os.path.splitext(args.output)[0]  # Remove extension if any
+    generate_plots(df, labels, output_prefix)
 
-    # Additional plots if PCA has at least 3 components
-    if df.shape[1] >= 3:
-        titivillus.plot_clusters(df, labels, plot_type="3d")  # Plot in 3D
-
-    # Plot heatmap if appropriate (note: best for smaller number of features due to readability)
-    if (
-        df.shape[1] <= 20
-    ):  # Adjust this threshold based on your dataset and readability preferences
-        titivillus.plot_clusters(
-            df, labels, plot_type="heatmap"
-        )  # Plot heatmap of similarity matrix
-
-    # Save results to CSV if output file is specified
-    if args["output"]:
-        titivillus.save_to_csv(df, labels, args["output"])
+    save_results(df, labels, output_prefix)
 
 
 if __name__ == "__main__":
