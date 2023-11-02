@@ -5,102 +5,80 @@
 ![CI](https://github.com/tresoldi/titivillus/workflows/CI/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/titivillus.svg)](https://pypi.org/project/titivillus)
 
-`titivillus` is a Python library and related command-line tools for simulating 
-stemmatological networks and related data (characters, states, edge length etc.). It 
-is intended for benchmarking quantitative methods of textual evolution, also providing 
-dummy tree and networks for their development and debugging.
+`titivillus` is a Python library and related command-line tools for performing community detection on preprocessed orthographic tabular data. Using advanced clustering algorithms and dimensionality reduction techniques, `titivillus` helps uncover natural groupings within complex datasets.
 
-The library is named after [Titivillus](https://en.wikipedia.org/wiki/Titivillus), a 
-demon commonly referenced to in Medieval times and said to work on behalf of Belphegor,
-Lucifer, or Satan to introduce errors 
-into the work of scribes. It can be compared to the twentieth-century folkloric 
-mischievous creature that causes mechanical failures, the gremlin.
+The library is named after [Titivillus](https://en.wikipedia.org/wiki/Titivillus), a demon from medieval folklore who was said to introduce errors into the work of scribes. In contrast, `titivillus` seeks to bring order to data, revealing underlying structures that may seem as chaotic as a scribe's mistakes.
 
 ## How does `titivillus` work?
 
-The library offers a number of abstractions suited for the study of textual evolution, 
-in particular without forcing a purely arboreal evolution. Each *codex* carries a 
-number of independent *characters*t, each with its own history.
+`titivillus` is structured around a simple workflow:
 
-Where applicable, the random generation follows that of another package released by 
-the author for the simulation of phylogenetic data, [ngesh](https://pypi.org/project/ngesh/).
+1. **Data Preparation**: Import data and preprocess it for analysis.
+2. **Feature Scaling**: Standardize or normalize your data for optimal performance.
+3. **Dimensionality Reduction**: Apply PCA to reduce the number of features, if necessary.
+4. **Clustering**: Choose from various clustering algorithms to find patterns in data.
+5. **Visualization**: Generate plots to visualize the clusters and data distribution.
+6. **Output**: Export the clustered data with labels for further investigation.
 
 ## Installation
 
-In any standard Python environment, `titivillus` can be installed with
+To install `titivillus`, run:
 
 ```bash
 $ pip install titivillus
 ```
 
-The `pip` installation will automatically fetch dependencies such as `numpy` and 
-`networkx`, if necessary. It is highly recommendend that the library is installed in 
-its own virtual environment.
+The installation will handle all required dependencies, including `pandas`, `numpy`, `scikit-learn`, and `matplotlib`. For best practices, create a virtual environment before installation.
 
 ## How to use
 
-For most usages, the creation of a random stemma can be easily performed from Python with:
+Here's a quick example to get you started with `titivillus`:
 
 ```python
-import titivillus
-stemma = titivillus.random_stemma()
+from titivillus import cluster, visualize
+
+# Load your dataset
+data = ...
+
+# Cluster your data
+labels = cluster(data, method='kmeans', n_clusters=5)
+
+# Visualize the results
+visualize(data, labels, mode='2D')
 ```
 
-Among the various parameters, it is possible to pass a pseudo-random number generator 
-seed that guarantees reproducibility across different calls. 
+For more detailed usage, please refer to the documentation and command-line help:
 
-```python
-stemma2 = titivillus.random_stemma(seed="uppsala")
+```bash
+$ titivillus --help
 ```
-
-The contents of the stemma can be inspected following the available tests. A graphical 
-version, using `networkx`, can be obtained with:
-
-```python
-import matplotlib.pyplot as plt
-import networkx as nx
-
-graph = stemma2.as_graph()
-nx.draw(graph)
-plt.show()
-```
-
-
-![random stemma](https://raw.githubusercontent.com/tresoldi/titivillus/main/docs/graph1.png)
-
-No stand-alone command-line tool has been released yet.
 
 ## Changelog
 
-Version 0.0.1:
+- Version 0.1
 
-  - First public release, aligned with experiments for the Apophthegmata Patrum
+  - Initial release with support for multiple clustering algorithms and visualization tools.
 
-## Community guidelines
+## Community Guidelines
 
-While the author can be contacted directly for support, it is recommended that third 
-parties use GitHub standard features, such as issues and pull requests, to contribute, 
-report problems, or seek support.
+Contributions are welcome! Please submit issues and pull requests on GitHub. Consult the `CONTRIBUTING.md` file for more information on how to contribute.
 
-Contributing guidelines, including a code of conduct, can be found in the
-`CONTRIBUTING.md` file.
+## Author and Citation
 
-## Author and citation
+`titivillus` is developed by Tiago Tresoldi (tiago.tresoldi@lingfil.uu.se).
 
-The library is developed by Tiago Tresoldi (tiago.tresoldi@lingfil.uu.se).
+Citing `titivillus`:
 
-If you use `titivillus`, please cite it as:
+> Tresoldi, Tiago (2023). Titivillus: A Python library for detecting and visualizing communities in steammatological data. Version 0.1. Uppsala University.
 
-> Tresoldi, Tiago (2021). Titivillus, a tool for simulating random stemmatological 
-> networks. Version 0.0.1. Uppsala. Available at: https://github.com/tresoldi/titivillus
+BibTeX entry:
 
-In BibTeX:
-
-```
-@misc{Tresoldi2021titivillus,
+```bibtex
+@misc{Tresoldi2023titivillus,
   author = {Tresoldi, Tiago},
-  title = {Titivillus, a tool for simulating random stemmatological networks},
+  title = {Titivillus: A Python library for detecting and visualizing communities in stemmatological data},
   howpublished = {\url{https://github.com/tresoldi/titivillus}},
-  address = {Uppsala},
-  year = {2021},
+  address = {Uppsala University},
+  year = {2023},
 }
+```

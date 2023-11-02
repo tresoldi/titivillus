@@ -5,13 +5,9 @@ Titivillus __init__ file.
 """
 
 # Version and general configuration for the package
-__version__ = "0.0.1"
+__version__ = "0.1"
 __author__ = "Tiago Tresoldi"
-__email__ = "tresoldi@gmail.com"
+__email__ = "tiago.tresoldi@lingfil.uu.se"
 
 # Build namespace
-from . import distance
-from .codex import Codex, codex_distance, OriginCopy, OriginMove, OriginExNovo
-from .common import set_seeds, collect_subseqs
-from .ngrams import ngrams_iter
-from .stemma import Stemma, random_stemma
+from .dummy import placeholder
