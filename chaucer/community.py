@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, Normalizer
 import matplotlib.pyplot as plt
 
 # Configure logging
@@ -124,6 +124,34 @@ def read_dataframe(filename: str) -> pd.DataFrame:
     return df
 
 
+def scale_data(df: pd.DataFrame, method: str) -> pd.DataFrame:
+    """
+    Scale the data using the specified method.
+    """
+    scalers = {
+        "standard": StandardScaler(),
+        "standard_nomean": StandardScaler(with_mean=False),
+        "minmax": MinMaxScaler(),
+        "robust": RobustScaler(),
+        "l2_norm": Normalizer(norm="l2"),
+    }
+
+    if method not in scalers:
+        logging.error(f"Scaling method '{method}' not recognized.")
+        raise ValueError(f"Scaling method '{method}' not recognized.")
+
+    try:
+        scaler = scalers[method]
+        scaled_df = pd.DataFrame(
+            scaler.fit_transform(df), index=df.index, columns=df.columns
+        )
+        logging.info(f"Data scaled using {method} method.")
+        return scaled_df
+    except Exception as e:
+        logging.error(f"Error scaling data: {e}")
+        raise
+
+
 def save_to_csv(data: pd.DataFrame, labels: np.ndarray, output_file: str) -> None:
     """
     Save the data along with its cluster labels to a CSV file.
@@ -146,13 +174,6 @@ def parse_arguments() -> Dict[str, Any]:
         description="Prepare orthographic data for analysis."
     )
     parser.add_argument("input", type=str, help="The source JSON file for processing.")
-    parser.add_argument(
-        "-s",
-        "--scale",
-        choices=["none", "standard_nomean", "standard_mean"],
-        default="none",
-        help="Whether to perform preprocessing scaling and of which kind (default: none)",
-    )
     parser.add_argument(
         "-d",
         "--decompose",
@@ -180,6 +201,13 @@ def parse_arguments() -> Dict[str, Any]:
         type=str,
         default="clustering_output.csv",
         help="The output CSV file path for saving the clustering results (default: clustering_output.csv)",
+    )
+    parser.add_argument(
+        "-s",
+        "--scale",
+        choices=["none", "standard", "standard_nomean", "minmax", "robust", "l2_norm"],
+        default="none",
+        help="The scaling method to apply to the data (default: none)",
     )
     parser.add_argument(
         "-v",
@@ -215,17 +243,9 @@ def main() -> None:
     # Read tabular data as a pandas dataframe
     df = read_dataframe(args["input"])
 
-    # Perform scaling if requested
-    if args["scale"] == "standard_mean":
-        df = pd.DataFrame(
-            StandardScaler().fit_transform(df), index=df.index, columns=df.columns
-        )
-    elif args["scale"] == "standard_nomean":
-        df = pd.DataFrame(
-            StandardScaler(with_mean=False).fit_transform(df),
-            index=df.index,
-            columns=df.columns,
-        )
+    # Perform scaling if not 'none'
+    if args["scale"] != "none":
+        df = scale_data(df, args["scale"])
 
     # Run decomposition if requested
     if args["decompose"] == "pca":
