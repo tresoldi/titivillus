@@ -28,7 +28,12 @@ setup(
         "Topic :: Software Development :: Libraries",
     ],
     description="A Python library for detecting and visualizing communities in steammatological data.",
-    entry_points={"console_scripts": ["titivillus=titivillus.__main__:main"]},
+    entry_points={
+        "console_scripts": [
+            "titivillus=titivillus.__main__:main",
+            "tei2df=titivillus.__tei2df__:main",
+        ]
+    },
     include_package_data=True,
     install_requires=install_requires,
     keywords=["community detection", "clustering", "networks", "steammatology"],
