@@ -31,9 +31,7 @@ setup(
     entry_points={
         "console_scripts": [
             "titivillus=titivillus.__main__:main",
-            "x2titi=titivillus.__x2titivillus__:main",
-            "tei2df=titivillus.__tei2df__:main",
-            "json2df=titivillus.__json2df__:main",
+            "x2titivillus=titivillus.__x2titivillus__:main",
         ]
     },
     include_package_data=True,
