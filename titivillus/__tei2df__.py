@@ -2,8 +2,8 @@
 """
 __tei2df__.py
 
-This script processes XML data to generate a CSV file containing reading variations
-from textual witnesses as recorded in the TEI XML file.
+This script processes XML data to generate a CSV file containing reading
+variations from textual witnesses as recorded in the TEI XML file.
 """
 
 # Standard library imports
@@ -131,7 +131,7 @@ def convert_nested_defaultdict_to_dict(nested_defaultdict):
     return nested_defaultdict
 
 
-def process_intermediate_data(raw_data, smoothing, filter_witnesses):
+def process_intermediate_data(raw_data, filter_witnesses):
     """
     Process the intermediate raw data into a pandas DataFrame.
 
@@ -139,8 +139,6 @@ def process_intermediate_data(raw_data, smoothing, filter_witnesses):
     ----------
     raw_data : dict
         The intermediate raw data.
-    smoothing : str
-        The type of smoothing to apply to the data.
     filter_witnesses : bool
         Whether to filter out certain witnesses.
 
@@ -177,20 +175,9 @@ def process_intermediate_data(raw_data, smoothing, filter_witnesses):
     )
     readings = sorted(flatten_data)
 
-    if smoothing == "mle":
-        vectors = [
-            [
-                flatten_data[reading].get(ms, 0)
-                / form_observations.get((reading.split("___")[0], ms), 1)
-                for reading in readings
-            ]
-            for ms in manuscripts
-        ]
-    elif smoothing == "none":
-        vectors = [
-            [flatten_data[reading].get(ms, 0) for reading in readings]
-            for ms in manuscripts
-        ]
+    vectors = [
+        [flatten_data[reading].get(ms, 0) for reading in readings] for ms in manuscripts
+    ]
 
     dataframe = pd.DataFrame(vectors, index=manuscripts, columns=readings)
     return dataframe
@@ -240,12 +227,6 @@ def parse_command_line_arguments():
         help="Overwrite the output file if it exists.",
     )
     parser.add_argument(
-        "--smoothing",
-        choices=["none", "mle"],
-        default="none",
-        help="The smoothing technique to use.",
-    )
-    parser.add_argument(
         "--filter-witnesses", action="store_true", help="Filter out certain witnesses."
     )
     return parser.parse_args()
@@ -262,9 +243,7 @@ def main():
     converted_data = convert_nested_defaultdict_to_dict(intermediate_data)
 
     logging.info("Processing intermediate data...")
-    dataframe = process_intermediate_data(
-        converted_data, args.smoothing, args.filter_witnesses
-    )
+    dataframe = process_intermediate_data(converted_data, args.filter_witnesses)
 
     logging.info("Writing output CSV...")
     write_dataframe_to_csv(dataframe, args.output_csv, args.overwrite)
