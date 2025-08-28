@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Titivillus-specific patterns
+test_output*/
+*_output*/
+realistic_output/
+comprehensive_test_output/

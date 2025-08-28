@@ -1,0 +1,27 @@
+# Test configuration for realistic evolution
+name: "realistic_evolution_test"
+description: "Test dataset with realistic evolutionary parameters"
+seed: 12345
+
+tree:
+  taxa_count: 6
+  tree_height: 1.5
+  tree_shape: "balanced"
+
+active_domains:
+  - "linguistics"
+
+domains:
+  linguistics:
+    character_count: 15
+    substitution_rate: 2.0
+    asymmetric_bias: 0.7
+    borrowability_range: [0.2, 0.9]
+    phonological_constraints: true
+
+errors:
+  missing_data_rate: 0.10
+  measurement_error_rate: 0.05
+
+output:
+  formats: ["nexus", "csv", "json"]
