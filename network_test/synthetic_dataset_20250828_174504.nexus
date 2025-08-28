@@ -1,0 +1,50 @@
+#NEXUS
+
+BEGIN DATA;
+  DIMENSIONS NTAX=5 NCHAR=12;
+  FORMAT DATATYPE=STANDARD GAP=- MISSING=?;
+  CHARLABELS
+    1 'case_marking_0'
+    2 'phoneme_inventory_1'
+    3 'word_order_2'
+    4 'syllable_structure_3'
+    5 'case_marking_4'
+    6 'syllable_structure_5'
+    7 'word_order_6'
+    8 'voicing_7'
+    9 'phoneme_inventory_8'
+    10 'phoneme_inventory_9'
+    11 'syllable_structure_10'
+    12 'voicing_11'
+  ;
+  STATELABELS
+    1 absent present
+    2 variant_0 variant_1 variant_2 variant_3 variant_4
+    3 SOV SVO VSO
+    4 CV CVC CCV CCVC
+    5 absent present
+    6 CV CVC CCV CCVC
+    7 SOV SVO VSO
+    8 absent present
+    9 variant_0 variant_1 variant_2 variant_3 variant_4 variant_5 variant_6
+    10 variant_0 variant_1 variant_2 variant_3 variant_4
+    11 CV CVC CCV CCVC
+    12 absent present
+  ;
+  MATRIX
+    A            110211001/50/21?
+    B            1402100011?0
+    C            140210001210
+    D            14?2?0001110
+    E            100210?11220
+  ;
+END;
+
+BEGIN TREES;
+  TREE true_tree = ((A,B),(C,(D,E))Node_1)Node_2[&reticulation=B->D:0.30];
+END;
+
+BEGIN ASSUMPTIONS;
+  CHARSET linguistics = 1 2 3 4 5 6 7 8 9 10 11 12;
+END;
+

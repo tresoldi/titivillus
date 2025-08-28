@@ -1,0 +1,594 @@
+{
+  "metadata": {
+    "name": "quick_linguistic_5taxa_12chars",
+    "generation_time": "2025-08-28T17:45:04.253536",
+    "generator_version": "0.1.0",
+    "format_version": "1.0"
+  },
+  "configuration": {
+    "name": "quick_linguistic_5taxa_12chars",
+    "seed": 789,
+    "simulation_mode": "hybrid",
+    "active_domains": [
+      "linguistics"
+    ],
+    "tree_parameters": {
+      "taxa_count": 5,
+      "tree_height": 1.0,
+      "tree_shape": "balanced"
+    }
+  },
+  "taxa": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ],
+  "characters": [
+    {
+      "name": "case_marking_0",
+      "description": "Case marking on nouns",
+      "character_type": "binary",
+      "states": [
+        "0",
+        "1"
+      ],
+      "state_labels": [
+        "absent",
+        "present"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.9352364139588153,
+      "matrix_type": "symmetric",
+      "borrowability": 0.11464055743549173,
+      "stability": 0.8
+    },
+    {
+      "name": "phoneme_inventory_1",
+      "description": "Phoneme class with 5 variants",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "state_labels": [
+        "variant_0",
+        "variant_1",
+        "variant_2",
+        "variant_3",
+        "variant_4"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.6110400059936523,
+      "matrix_type": "symmetric",
+      "borrowability": 0.11730887470373101,
+      "stability": 0.4042480199874551
+    },
+    {
+      "name": "word_order_2",
+      "description": "Basic word order",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "state_labels": [
+        "SOV",
+        "SVO",
+        "VSO"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.2114320153621214,
+      "matrix_type": "symmetric",
+      "borrowability": 0.26774410520567926,
+      "stability": 0.8
+    },
+    {
+      "name": "syllable_structure_3",
+      "description": "Syllable complexity",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "state_labels": [
+        "CV",
+        "CVC",
+        "CCV",
+        "CCVC"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.1405256809874682,
+      "matrix_type": "symmetric",
+      "borrowability": 0.6131806561248265,
+      "stability": 0.6
+    },
+    {
+      "name": "case_marking_4",
+      "description": "Case marking on nouns",
+      "character_type": "binary",
+      "states": [
+        "0",
+        "1"
+      ],
+      "state_labels": [
+        "absent",
+        "present"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.8635642261426393,
+      "matrix_type": "symmetric",
+      "borrowability": 0.3847036766203583,
+      "stability": 0.8
+    },
+    {
+      "name": "syllable_structure_5",
+      "description": "Syllable complexity",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "state_labels": [
+        "CV",
+        "CVC",
+        "CCV",
+        "CCVC"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.8705001590310406,
+      "matrix_type": "symmetric",
+      "borrowability": 0.5138237515548864,
+      "stability": 0.6
+    },
+    {
+      "name": "word_order_6",
+      "description": "Basic word order",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2"
+      ],
+      "state_labels": [
+        "SOV",
+        "SVO",
+        "VSO"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.147930022332646,
+      "matrix_type": "symmetric",
+      "borrowability": 0.3888978674449616,
+      "stability": 0.8
+    },
+    {
+      "name": "voicing_7",
+      "description": "Presence of voicing contrast",
+      "character_type": "binary",
+      "states": [
+        "0",
+        "1"
+      ],
+      "state_labels": [
+        "absent",
+        "present"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.3518644972507092,
+      "matrix_type": "symmetric",
+      "borrowability": 0.4452983154261452,
+      "stability": 0.7
+    },
+    {
+      "name": "phoneme_inventory_8",
+      "description": "Phoneme class with 7 variants",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "state_labels": [
+        "variant_0",
+        "variant_1",
+        "variant_2",
+        "variant_3",
+        "variant_4",
+        "variant_5",
+        "variant_6"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.9556216729367941,
+      "matrix_type": "symmetric",
+      "borrowability": 0.2452561606510298,
+      "stability": 0.5247720632987525
+    },
+    {
+      "name": "phoneme_inventory_9",
+      "description": "Phoneme class with 5 variants",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "state_labels": [
+        "variant_0",
+        "variant_1",
+        "variant_2",
+        "variant_3",
+        "variant_4"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 0.9547906179338433,
+      "matrix_type": "symmetric",
+      "borrowability": 0.7040062925507684,
+      "stability": 0.6962522294464497
+    },
+    {
+      "name": "syllable_structure_10",
+      "description": "Syllable complexity",
+      "character_type": "multistate",
+      "states": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "state_labels": [
+        "CV",
+        "CVC",
+        "CCV",
+        "CCVC"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.4160788454132822,
+      "matrix_type": "symmetric",
+      "borrowability": 0.6096167967808767,
+      "stability": 0.6
+    },
+    {
+      "name": "voicing_11",
+      "description": "Presence of voicing contrast",
+      "character_type": "binary",
+      "states": [
+        "0",
+        "1"
+      ],
+      "state_labels": [
+        "absent",
+        "present"
+      ],
+      "domain": "linguistics",
+      "substitution_rate": 1.290021184679631,
+      "matrix_type": "symmetric",
+      "borrowability": 0.2623049530542371,
+      "stability": 0.7
+    }
+  ],
+  "character_data": {
+    "A": {
+      "0": "1",
+      "1": "1",
+      "2": "0",
+      "3": "2",
+      "4": "1",
+      "5": "1",
+      "6": "0",
+      "7": "0",
+      "8": "1/5",
+      "9": "0/2",
+      "10": "1",
+      "11": "?"
+    },
+    "B": {
+      "0": "1",
+      "1": "4",
+      "2": "0",
+      "3": "2",
+      "4": "1",
+      "5": "0",
+      "6": "0",
+      "7": "0",
+      "8": "1",
+      "9": "1",
+      "10": "?",
+      "11": "0"
+    },
+    "C": {
+      "0": "1",
+      "1": "4",
+      "2": "0",
+      "3": "2",
+      "4": "1",
+      "5": "0",
+      "6": "0",
+      "7": "0",
+      "8": "1",
+      "9": "2",
+      "10": "1",
+      "11": "0"
+    },
+    "D": {
+      "0": "1",
+      "1": "4",
+      "2": "?",
+      "3": "2",
+      "4": "?",
+      "5": "0",
+      "6": "0",
+      "7": "0",
+      "8": "1",
+      "9": "1",
+      "10": "1",
+      "11": "0"
+    },
+    "E": {
+      "0": "1",
+      "1": "0",
+      "2": "0",
+      "3": "2",
+      "4": "1",
+      "5": "0",
+      "6": "?",
+      "7": "1",
+      "8": "1",
+      "9": "2",
+      "10": "2",
+      "11": "0"
+    }
+  },
+  "tree": {
+    "newick": "((A,B),(C,(D,E))Node_1)Node_2[&reticulation=B->D:0.30]",
+    "branch_lengths": {
+      "A": 0.10540699190270841,
+      "B": 0.07062214819111343,
+      "C": 0.4260785816418785,
+      "D": 0.2642828943801825,
+      "E": 0.9999999999999999,
+      "Node_1": 0.3838915541005401,
+      "Node_2": 0.0028814017426244485
+    }
+  },
+  "statistics": {
+    "generation_time": 0.006972,
+    "taxa_count": 5,
+    "character_count": 12,
+    "total_data_cells": 60,
+    "missing_cells": 5,
+    "missing_rate": 0.08333333333333333,
+    "polymorphic_cells": 2,
+    "polymorphism_rate": 0.03333333333333333,
+    "domain_distribution": {
+      "linguistics": 12
+    },
+    "character_type_distribution": {
+      "binary": 4,
+      "multistate": 8
+    },
+    "reticulation_count": 1,
+    "contact_zone_count": 2,
+    "network_effects_enabled": true
+  },
+  "ground_truth": {
+    "true_tree": "((A,B),(C,(D,E))Node_1)Node_2[&reticulation=B->D:0.30]",
+    "branch_lengths": {
+      "A": 0.10540699190270841,
+      "B": 0.07062214819111343,
+      "C": 0.4260785816418785,
+      "D": 0.2642828943801825,
+      "E": 0.9999999999999999,
+      "Node_1": 0.3838915541005401,
+      "Node_2": 0.0028814017426244485
+    },
+    "character_histories": {
+      "case_marking_0": {
+        "ancestral_states": {
+          "root": "1"
+        },
+        "final_states": {
+          "A": "1",
+          "B": "1",
+          "C": "1",
+          "D": "1",
+          "E": "1"
+        },
+        "substitutions": []
+      },
+      "phoneme_inventory_1": {
+        "ancestral_states": {
+          "root": "4"
+        },
+        "final_states": {
+          "A": "1",
+          "B": "4",
+          "C": "4",
+          "D": "4",
+          "E": "0"
+        },
+        "substitutions": [
+          [
+            "4",
+            "1",
+            0.10540699190270841,
+            "A"
+          ],
+          [
+            "4",
+            "0",
+            0.9999999999999999,
+            "E"
+          ]
+        ]
+      },
+      "word_order_2": {
+        "ancestral_states": {
+          "root": "0"
+        },
+        "final_states": {
+          "A": "0",
+          "B": "0",
+          "C": "0",
+          "D": "0",
+          "E": "0"
+        },
+        "substitutions": []
+      },
+      "syllable_structure_3": {
+        "ancestral_states": {
+          "root": "2"
+        },
+        "final_states": {
+          "A": "2",
+          "B": "2",
+          "C": "2",
+          "D": "2",
+          "E": "2"
+        },
+        "substitutions": []
+      },
+      "case_marking_4": {
+        "ancestral_states": {
+          "root": "1"
+        },
+        "final_states": {
+          "A": "1",
+          "B": "1",
+          "C": "1",
+          "D": "1",
+          "E": "1"
+        },
+        "substitutions": []
+      },
+      "syllable_structure_5": {
+        "ancestral_states": {
+          "root": "0"
+        },
+        "final_states": {
+          "A": "0",
+          "B": "0",
+          "C": "0",
+          "D": "0",
+          "E": "0"
+        },
+        "substitutions": []
+      },
+      "word_order_6": {
+        "ancestral_states": {
+          "root": "0"
+        },
+        "final_states": {
+          "A": "0",
+          "B": "0",
+          "C": "0",
+          "D": "0",
+          "E": "0"
+        },
+        "substitutions": []
+      },
+      "voicing_7": {
+        "ancestral_states": {
+          "root": "0"
+        },
+        "final_states": {
+          "A": "0",
+          "B": "0",
+          "C": "0",
+          "D": "0",
+          "E": "1"
+        },
+        "substitutions": [
+          [
+            "0",
+            "1",
+            0.9999999999999999,
+            "E"
+          ]
+        ]
+      },
+      "phoneme_inventory_8": {
+        "ancestral_states": {
+          "root": "1"
+        },
+        "final_states": {
+          "A": "1",
+          "B": "1",
+          "C": "1",
+          "D": "1",
+          "E": "1"
+        },
+        "substitutions": []
+      },
+      "phoneme_inventory_9": {
+        "ancestral_states": {
+          "root": "2"
+        },
+        "final_states": {
+          "A": "2",
+          "B": "2",
+          "C": "2",
+          "D": "1",
+          "E": "2"
+        },
+        "substitutions": [
+          [
+            "2",
+            "1",
+            0.2642828943801825,
+            "D"
+          ]
+        ]
+      },
+      "syllable_structure_10": {
+        "ancestral_states": {
+          "root": "1"
+        },
+        "final_states": {
+          "A": "1",
+          "B": "1",
+          "C": "1",
+          "D": "1",
+          "E": "2"
+        },
+        "substitutions": [
+          [
+            "1",
+            "2",
+            0.9999999999999999,
+            "E"
+          ]
+        ]
+      },
+      "voicing_11": {
+        "ancestral_states": {
+          "root": "0"
+        },
+        "final_states": {
+          "A": "0",
+          "B": "0",
+          "C": "0",
+          "D": "0",
+          "E": "0"
+        },
+        "substitutions": []
+      }
+    }
+  },
+  "networks": {
+    "reticulations": [
+      

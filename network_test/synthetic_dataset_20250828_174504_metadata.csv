@@ -1,0 +1,13 @@
+character_index,character_name,character_type,domain,states,substitution_rate,description
+0,case_marking_0,binary,linguistics,0|1,0.9352364139588153,Case marking on nouns
+1,phoneme_inventory_1,multistate,linguistics,0|1|2|3|4,0.6110400059936523,Phoneme class with 5 variants
+2,word_order_2,multistate,linguistics,0|1|2,1.2114320153621214,Basic word order
+3,syllable_structure_3,multistate,linguistics,0|1|2|3,1.1405256809874682,Syllable complexity
+4,case_marking_4,binary,linguistics,0|1,0.8635642261426393,Case marking on nouns
+5,syllable_structure_5,multistate,linguistics,0|1|2|3,0.8705001590310406,Syllable complexity
+6,word_order_6,multistate,linguistics,0|1|2,1.147930022332646,Basic word order
+7,voicing_7,binary,linguistics,0|1,1.3518644972507092,Presence of voicing contrast
+8,phoneme_inventory_8,multistate,linguistics,0|1|2|3|4|5|6,0.9556216729367941,Phoneme class with 7 variants
+9,phoneme_inventory_9,multistate,linguistics,0|1|2|3|4,0.9547906179338433,Phoneme class with 5 variants
+10,syllable_structure_10,multistate,linguistics,0|1|2|3,1.4160788454132822,Syllable complexity
+11,voicing_11,binary,linguistics,0|1,1.290021184679631,Presence of voicing contrast

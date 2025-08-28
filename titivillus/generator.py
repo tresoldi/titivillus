@@ -200,6 +200,14 @@ class Generator:
         character_data.update(evolution_result['character_data'])
         character_histories = evolution_result.get('histories', {})
         
+        # Step 4.5: Apply network-based character borrowing
+        borrowing_events = []
+        if reticulations or contact_zones:
+            logger.debug("Applying network-based character borrowing")
+            character_data, borrowing_events = self.network_engine.apply_character_borrowing(
+                character_data, all_characters, taxa, reticulations, contact_zones
+            )
+        
         # Step 5: Apply error injection
         logger.debug("Applying error injection")
         degraded_data, error_patterns = self.error_engine.inject_errors(
@@ -216,6 +224,7 @@ class Generator:
             error_patterns=error_patterns,
             reticulations=reticulations,
             contact_zones=contact_zones,
+            borrowing_events=borrowing_events,
             generation_config=self.config,
             validation_level=self.config.validation_level
         )
