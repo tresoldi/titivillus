@@ -10,6 +10,8 @@ Titivillus (named after the demon of scribal errors) is an independent library f
 
 Titivillus embraces the inherent messiness of real phylogenetic data while providing complete ground truth for rigorous algorithm testing. The name acknowledges that realistic synthetic data must include the imperfections that make phylogenetic inference challenging - just as the medieval demon Titivillus was said to introduce errors into manuscripts during copying.
 
+When given a commit message, use ONLY AND EXACTLY that commit message.
+
 ## Development Commands
 
 ### Setup
