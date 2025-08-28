@@ -1,0 +1,85 @@
+# Basic Linguistic Dataset Configuration
+# This example generates a simple linguistic phylogenetic dataset
+# suitable for testing phylogenetic inference algorithms
+
+name: "basic_linguistic_test"
+description: "Simple linguistic dataset for algorithm testing"
+seed: 42
+
+# Phylogenetic tree configuration
+tree:
+  taxa_count: 15
+  tree_height: 1.0
+  tree_shape: "balanced"  # balanced, pectinate, random
+  branch_length_distribution: "exponential"
+  branch_length_params:
+    rate: 1.0
+
+# Active domains for this dataset
+active_domains:
+  - "linguistics"
+
+# Domain-specific configurations
+domains:
+  linguistics:
+    character_count: 50
+    character_types: ["binary", "multistate"]
+    substitution_rate: 1.0
+    asymmetric_bias: 0.6  # 0.0 = symmetric, 1.0 = fully asymmetric
+    directional_change_prob: 0.3
+    
+    # Linguistic-specific parameters
+    borrowability_range: [0.1, 0.7]
+    phonological_constraints: true
+    morphological_complexity: 0.6
+    lexical_stability: 0.8
+    areal_effects: 0.2
+
+# Network effects (reticulation and contact)
+networks:
+  enable_reticulation: true
+  reticulation_rate: 0.1
+  max_reticulations: 3
+  reticulation_strength: 0.3
+  
+  contact_zones: 2
+  contact_strength: 0.4
+  borrowing_rate: 0.15
+  geographic_structure: true
+
+# Error injection and missing data
+errors:
+  missing_data_rate: 0.12
+  missing_patterns: ["random", "systematic"]
+  systematic_missing_bias: 0.2
+  
+  measurement_error_rate: 0.04
+  error_clustering: false
+  
+  polymorphism_rate: 0.06
+  polymorphism_complexity: 0.5
+  
+  domain_specific_errors: true
+
+# Output configuration
+output:
+  formats: ["nexus", "csv", "json"]
+  base_name: "linguistic_test"
+  include_timestamp: true
+  
+  nexus_options:
+    include_character_labels: true
+    include_state_labels: true
+    include_assumptions: true
+    include_trees: true
+  
+  csv_options:
+    separate_partitions: false
+    include_metadata: true
+  
+  json_options:
+    include_ground_truth: true
+    compact: false
+
+# Validation level for ground truth tracking
+validation_level: "comprehensive"  # basic, standard, comprehensive

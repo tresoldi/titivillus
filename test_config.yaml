@@ -1,0 +1,112 @@
+name: quick_linguistic_20taxa_50chars
+description: Example linguistic phylogenetic dataset
+seed: 42
+simulation_mode: hybrid
+validation_level: comprehensive
+tree:
+  taxa_count: 20
+  tree_height: 1.0
+  tree_shape: balanced
+  branch_length_distribution: exponential
+  branch_length_params:
+    rate: 1.0
+  root_age: null
+  calibration_points: []
+active_domains:
+- linguistics
+domains:
+  linguistics:
+    character_count: 50
+    character_types:
+    - binary
+    - multistate
+    substitution_rate: 1.0
+    asymmetric_bias: 0.0
+    directional_change_prob: 0.0
+    borrowability_range:
+    - 0.1
+    - 0.8
+    phonological_constraints: true
+    morphological_complexity: 0.6
+    lexical_stability: 0.8
+    areal_effects: 0.3
+    sound_change_rates:
+      consonantal: 0.8
+      vocalic: 1.2
+      prosodic: 0.6
+  stemmatology:
+    character_count: 50
+    character_types:
+    - binary
+    - multistate
+    substitution_rate: 1.0
+    asymmetric_bias: 0.0
+    directional_change_prob: 0.0
+    scribal_error_rate: 0.15
+    variant_complexity: 0.7
+    manuscript_quality_variation: 0.4
+    contamination_events: 0.1
+    error_prone_positions: 0.25
+    paleographic_confusion: true
+    correction_probability: 0.3
+  cultural:
+    character_count: 50
+    character_types:
+    - binary
+    - multistate
+    substitution_rate: 1.0
+    asymmetric_bias: 0.0
+    directional_change_prob: 0.0
+    innovation_bias: 0.4
+    diffusion_strength: 0.6
+    prestige_effects: 0.3
+    trade_route_effects: 0.2
+    stability_variation: 0.4
+    horizontal_transmission: 0.5
+    vertical_transmission: 0.8
+errors:
+  missing_data_rate: 0.15
+  missing_patterns:
+  - random
+  - systematic
+  systematic_missing_bias: 0.3
+  measurement_error_rate: 0.05
+  error_clustering: false
+  cluster_size_range:
+  - 2
+  - 5
+  polymorphism_rate: 0.08
+  polymorphism_complexity: 0.6
+  domain_specific_errors: true
+networks:
+  enable_reticulation: true
+  reticulation_rate: 0.1
+  max_reticulations: 5
+  reticulation_strength: 0.3
+  contact_zones: 2
+  contact_strength: 0.4
+  contact_duration_range:
+  - 0.1
+  - 0.5
+  borrowing_rate: 0.2
+  horizontal_transfer_rate: 0.15
+  geographic_structure: true
+  migration_rate: 0.05
+output:
+  formats:
+  - nexus
+  - csv
+  - json
+  base_name: synthetic_dataset
+  include_timestamp: true
+  nexus_options:
+    include_character_labels: true
+    include_state_labels: true
+    include_assumptions: true
+    include_trees: true
+  csv_options:
+    separate_partitions: true
+    include_metadata: true
+  json_options:
+    include_ground_truth: true
+    compact: false

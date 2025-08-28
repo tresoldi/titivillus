@@ -1,0 +1,114 @@
+# Multi-Domain Analysis Configuration  
+# Demonstrates combined linguistic, stemmatological, and cultural evolution data
+# for comprehensive phylogenetic analysis
+
+name: "multidomain_phylogenetic_dataset"
+description: "Combined analysis across linguistic, manuscript, and cultural domains"
+seed: 12345
+
+# Tree configuration for multi-domain analysis
+tree:
+  taxa_count: 25
+  tree_height: 1.5
+  tree_shape: "random"
+  branch_length_distribution: "gamma"
+  branch_length_params:
+    shape: 2.0
+    scale: 0.3
+
+# All three domains active
+active_domains:
+  - "linguistics"
+  - "stemmatology" 
+  - "cultural"
+
+# Domain configurations
+domains:
+  linguistics:
+    character_count: 60
+    substitution_rate: 1.2
+    asymmetric_bias: 0.7
+    directional_change_prob: 0.4
+    
+    borrowability_range: [0.05, 0.85]
+    phonological_constraints: true
+    morphological_complexity: 0.8
+    areal_effects: 0.4
+    
+  stemmatology:
+    character_count: 45
+    substitution_rate: 1.5
+    asymmetric_bias: 0.3
+    
+    scribal_error_rate: 0.20
+    variant_complexity: 0.8
+    manuscript_quality_variation: 0.5
+    contamination_events: 0.15
+    error_prone_positions: 0.3
+    scribal_error_patterns: true
+    
+  cultural:
+    character_count: 35
+    substitution_rate: 0.8
+    asymmetric_bias: 0.5
+    
+    innovation_bias: 0.6
+    diffusion_strength: 0.7
+    prestige_effects: 0.4
+    trade_route_effects: 0.3
+    stability_variation: 0.3
+    horizontal_transmission: 0.6
+
+# Enhanced network effects for multi-domain analysis
+networks:
+  enable_reticulation: true
+  reticulation_rate: 0.2
+  max_reticulations: 6
+  reticulation_strength: 0.4
+  
+  contact_zones: 4
+  contact_strength: 0.6
+  contact_duration_range: [0.1, 0.6]
+  
+  borrowing_rate: 0.25
+  horizontal_transfer_rate: 0.2
+  geographic_structure: true
+  migration_rate: 0.08
+
+# Comprehensive error modeling
+errors:
+  missing_data_rate: 0.18
+  missing_patterns: ["random", "systematic", "clustered", "taxon_specific"]
+  systematic_missing_bias: 0.4
+  
+  measurement_error_rate: 0.07
+  error_clustering: true
+  cluster_size_range: [2, 6]
+  
+  polymorphism_rate: 0.10
+  polymorphism_complexity: 0.7
+  
+  domain_specific_errors: true
+
+# Comprehensive output for analysis
+output:
+  formats: ["nexus", "csv", "json", "newick"]
+  base_name: "multidomain_analysis"
+  include_timestamp: true
+  
+  nexus_options:
+    include_character_labels: true
+    include_state_labels: true
+    include_assumptions: true
+    include_trees: true
+  
+  csv_options:
+    separate_partitions: true
+    include_metadata: true
+  
+  json_options:
+    include_ground_truth: true
+    compact: false
+
+# Maximum validation for research use
+validation_level: "comprehensive"

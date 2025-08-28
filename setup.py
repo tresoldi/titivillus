@@ -1,51 +1,84 @@
+#!/usr/bin/env python3
 """
-Setup file for titivillus.
+Setup configuration for Titivillus synthetic phylogenetic data generator.
 """
 
-# Import Python standard libraries
-import pathlib
+from setuptools import setup, find_packages
+import os
 
-from setuptools import setup
+# Read the contents of README file
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
-# The directory containing this file
-LOCAL_PATH = pathlib.Path(__file__).parent
+# Read version from __init__.py
+def get_version():
+    version_file = os.path.join(this_directory, 'titivillus', '__init__.py')
+    with open(version_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('__version__'):
+                return line.split('=')[1].strip().strip('"').strip("'")
+    return '0.1.0'
 
-# The text of the README file
-README_FILE = (LOCAL_PATH / "README.md").read_text()
-
-# Load requirements, so they are listed in a single place
-with open("requirements.txt", encoding="utf-8") as fp:
-    install_requires = [dep.strip() for dep in fp.readlines()]
-
-# This call to setup() does all the work
 setup(
-    author="Tiago Tresoldi",
-    author_email="tiago.tresoldi@lingfil.uu.se",
+    name='titivillus',
+    version=get_version(),
+    author='Titivillus Development Team',
+    author_email='contact@titivillus.org',
+    description='Synthetic phylogenetic data generator for algorithm testing and validation',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/titivillus/titivillus',
+    packages=find_packages(),
     classifiers=[
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Topic :: Software Development :: Libraries",
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Operating System :: OS Independent',
     ],
-    description="A Python library for detecting and visualizing communities in steammatological data.",
-    entry_points={
-        "console_scripts": [
-            "titivillus=titivillus.__main__:main",
-            "x2titivillus=titivillus.__x2titivillus__:main",
+    keywords='phylogenetics synthetic-data bioinformatics linguistics cultural-evolution',
+    python_requires='>=3.8',
+    install_requires=[
+        'numpy>=1.20.0',
+        'scipy>=1.7.0',
+        'PyYAML>=6.0',
+        'click>=8.0.0',
+    ],
+    extras_require={
+        'dev': [
+            'pytest>=7.0.0',
+            'pytest-cov>=4.0.0',
+            'black>=22.0.0',
+            'flake8>=5.0.0',
+            'mypy>=1.0.0',
+        ],
+        'plotting': [
+            'matplotlib>=3.5.0',
+            'seaborn>=0.11.0',
+        ],
+        'fast': [
+            'numba>=0.56.0',
         ]
     },
+    entry_points={
+        'console_scripts': [
+            'titivillus=titivillus.cli:main',
+        ],
+    },
+    package_data={
+        'titivillus': [
+            'config/*.yaml',
+            'examples/*.yaml',
+            'templates/*.yaml',
+        ],
+    },
     include_package_data=True,
-    install_requires=install_requires,
-    keywords=["community detection", "clustering", "networks", "steammatology"],
-    license="GPLv3",
-    long_description=README_FILE,
-    long_description_content_type="text/markdown",
-    name="titivillus",
-    packages=["titivillus"],
-    python_requires=">=3.8",
-    test_suite="tests",
-    tests_require=[],
-    url="https://github.com/tresoldi/titivillus",
-    version="0.1",
     zip_safe=False,
 )
