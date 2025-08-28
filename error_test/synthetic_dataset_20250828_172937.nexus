@@ -1,0 +1,41 @@
+#NEXUS
+
+BEGIN DATA;
+  DIMENSIONS NTAX=4 NCHAR=8;
+  FORMAT DATATYPE=STANDARD GAP=- MISSING=?;
+  CHARLABELS
+    1 'nasalization_0'
+    2 'word_order_1'
+    3 'phoneme_inventory_2'
+    4 'voicing_3'
+    5 'syllable_structure_4'
+    6 'syllable_structure_5'
+    7 'nasalization_6'
+    8 'nasalization_7'
+  ;
+  STATELABELS
+    1 absent present
+    2 SOV SVO VSO
+    3 variant_0 variant_1 variant_2 variant_3 variant_4 variant_5
+    4 absent present
+    5 CV CVC CCV CCVC
+    6 CV CVC CCV CCVC
+    7 absent present
+    8 absent present
+  ;
+  MATRIX
+    A            12301000
+    B            0230000?
+    C            0/1?301010
+    D            0/1?301?00
+  ;
+END;
+
+BEGIN TREES;
+  TREE true_tree = ((A,B),(C,D))Node_1;
+END;
+
+BEGIN ASSUMPTIONS;
+  CHARSET linguistics = 1 2 3 4 5 6 7 8;
+END;
+

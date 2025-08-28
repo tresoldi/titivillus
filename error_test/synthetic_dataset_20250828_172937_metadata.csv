@@ -1,0 +1,9 @@
+character_index,character_name,character_type,domain,states,substitution_rate,description
+0,nasalization_0,binary,linguistics,0|1,1.3085233888414787,Nasal vowels present
+1,word_order_1,multistate,linguistics,0|1|2,0.6213598382407237,Basic word order
+2,phoneme_inventory_2,multistate,linguistics,0|1|2|3|4|5,1.0757098698077492,Phoneme class with 6 variants
+3,voicing_3,binary,linguistics,0|1,1.0699991476659645,Presence of voicing contrast
+4,syllable_structure_4,multistate,linguistics,0|1|2|3,1.4204899756678726,Syllable complexity
+5,syllable_structure_5,multistate,linguistics,0|1|2|3,0.5081834161214307,Syllable complexity
+6,nasalization_6,binary,linguistics,0|1,1.1479614068351942,Nasal vowels present
+7,nasalization_7,binary,linguistics,0|1,0.7135935606486695,Nasal vowels present
